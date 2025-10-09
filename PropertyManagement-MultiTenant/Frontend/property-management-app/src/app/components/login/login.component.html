@@ -1,0 +1,87 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Property Management System</h1>
+      <p>Multi-Tenant Edition</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <h2>Sign In</h2>
+      
+      <div class="form-field">
+        <label for="companyCode">Company Code</label>
+        <input
+          id="companyCode"
+          type="text"
+          formControlName="companyCode"
+          placeholder="Enter your company code (e.g., DEMO2024)"
+          [class.error]="loginForm.get('companyCode')?.invalid && loginForm.get('companyCode')?.touched"
+        />
+        <span class="error-message" *ngIf="loginForm.get('companyCode')?.invalid && loginForm.get('companyCode')?.touched">
+          Company code is required
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="username">Username or Email</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Enter your username or email"
+          [class.error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+        />
+        <span class="error-message" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+          Username is required
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <div class="password-field">
+          <input
+            id="password"
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Enter your password"
+            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          />
+          <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">
+            {{ hidePassword ? '👁️' : '🙈' }}
+          </button>
+        </div>
+        <span class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          Password is required
+        </span>
+      </div>
+
+      <div class="form-field checkbox-field">
+        <label>
+          <input type="checkbox" formControlName="rememberMe" />
+          <span>Remember me</span>
+        </label>
+      </div>
+
+      <div class="error-banner" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading || loginForm.invalid">
+        <span *ngIf="!loading">Sign In</span>
+        <span *ngIf="loading">Signing in...</span>
+      </button>
+
+      <div class="register-link">
+        <p>Don't have a company account?</p>
+        <button type="button" class="btn-link" (click)="goToRegister()">
+          Register Your Company
+        </button>
+      </div>
+    </form>
+
+    <div class="login-footer">
+      <p>© 2025 Property Management System. All rights reserved.</p>
+    </div>
+  </div>
+</div>
+

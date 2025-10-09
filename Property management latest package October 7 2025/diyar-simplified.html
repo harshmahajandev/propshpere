@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diyar Property Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        'primary-light': '#DBEAFE',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .villa-unit {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .villa-unit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Login Page -->
+    <div id="login-page" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md fade-in">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl font-bold">D</span>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900">Diyar Property</h1>
+                <p class="text-gray-600">Management System</p>
+            </div>
+            
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your email" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-lg">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-sm text-gray-600">
+                <p>Demo Mode: Use any credentials to login</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app-container" class="hidden min-h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div class="flex items-center justify-center h-16 bg-blue-600">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3">
+                        <span class="text-blue-600 text-lg font-bold">D</span>
+                    </div>
+                    <span class="text-white text-xl font-bold">Diyar</span>
+                </div>
+            </div>
+            
+            <nav class="mt-5">
+                <div class="px-2 space-y-1">
+                    <a href="#" onclick="showPage('dashboard')" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-lg text-blue-600 bg-blue-100">
+                        <span class="mr-3">📊</span>
+                        Dashboard
+                    </a>
+                    <a href="#" onclick="showPage('properties')" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100">
+                        <span class="mr-3">🏘️</span>
+                        Properties
+                    </a>
+                    <a href="#" onclick="showPage('availability')" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100">
+                        <span class="mr-3">📋</span>
+                        Unit Availability
+                    </a>
+                    <a href="#" onclick="showPage('villa-map')" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100">
+                        <span class="mr-3">🗺️</span>
+                        Villa Map
+                    </a>
+                    <a href="#" onclick="logout()" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg text-red-600 hover:bg-red-100 mt-8">
+                        <span class="mr-3">🚪</span>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Mobile menu button -->
+        <div class="lg:hidden fixed top-4 left-4 z-50">
+            <button id="mobile-menu-btn" onclick="toggleSidebar()" class="bg-white p-2 rounded-lg shadow-lg">
+                <span class="block w-6 h-0.5 bg-gray-600 mb-1"></span>
+                <span class="block w-6 h-0.5 bg-gray-600 mb-1"></span>
+                <span class="block w-6 h-0.5 bg-gray-600"></span>
+            </button>
+        </div>
+
+        <!-- Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content -->
+        <div class="lg:ml-64">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="p-6">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome to Diyar Property Management</h1>
+                    <p class="text-gray-600">Manage your property portfolio with ease</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <span class="text-blue-600 text-xl">🏠</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Total Properties</p>
+                                <p class="text-2xl font-bold text-gray-900">10</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <span class="text-green-600 text-xl">📈</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Occupancy Rate</p>
+                                <p class="text-2xl font-bold text-gray-900">78%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <span class="text-yellow-600 text-xl">💰</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Monthly Revenue</p>
+                                <p class="text-2xl font-bold text-gray-900">BHD 45K</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <span class="text-purple-600 text-xl">👥</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Active Tenants</p>
+                                <p class="text-2xl font-bold text-gray-900">68</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                <span class="text-green-600">✓</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-900">New booking confirmed</p>
+                                <p class="text-xs text-gray-500">Amwaj Floating City Villa - Unit A12</p>
+                            </div>
+                            <div class="ml-auto text-xs text-gray-500">2 hours ago</div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <span class="text-yellow-600">⚠️</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-900">Maintenance scheduled</p>
+                                <p class="text-xs text-gray-500">Saar Premium Villa - Unit B3</p>
+                            </div>
+                            <div class="ml-auto text-xs text-gray-500">1 day ago</div>
+                        </div>
+                        
+                        <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-600">💬</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-900">Inquiry received</p>
+                                <p class="text-xs text-gray-500">Muharraq Heritage Villa - Unit C5</p>
+                            </div>
+                            <div class="ml-auto text-xs text-gray-500">2 days ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties Page -->
+            <div id="properties-page" class="hidden p-6">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Property Portfolio</h1>
+                    <p class="text-gray-600">Manage all properties in your portfolio</p>
+                </div>
+
+                <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Properties will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Unit Availability Page -->
+            <div id="availability-page" class="hidden p-6">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Unit Availability</h1>
+                    <p class="text-gray-600">Track the status of all units across your properties</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">Available</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">Booked</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-amber-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">Reserved</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">Maintenance</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tenant</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rent (BHD)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="availability-table" class="bg-white divide-y divide-gray-200">
+                                <!-- Table rows will be dynamically loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Villa Map Page -->
+            <div id="villa-map-page" class="hidden p-6">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Villa Map - Amwaj Floating City</h1>
+                    <p class="text-gray-600">Interactive map showing unit availability</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="mb-6">
+                        <div class="flex flex-wrap gap-4 mb-4">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">Available (12)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">Booked (8)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-amber-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">Reserved (3)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-600">Maintenance (2)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="villa-map-grid" class="grid grid-cols-5 gap-4 max-w-4xl mx-auto">
+                        <!-- Villa map will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="unit-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 fade-in">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-900" id="modal-title">Unit Details</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+                <div id="modal-content">
+                    <!-- Modal content will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const appState = {
+            currentPage: 'login',
+            isLoggedIn: false,
+            properties: [
+                {
+                    id: '1',
+                    title: 'Amwaj Floating City Villa',
+                    project: 'Amwaj Islands',
+                    location: 'Amwaj Islands, Bahrain',
+                    type: 'villa',
+                    price: 185000,
+                    size: 300,
+                    bedrooms: 4,
+                    bathrooms: 3,
+                    units: 25,
+                    occupiedUnits: 18,
+                    description: 'Luxury waterfront villa in the prestigious Amwaj Islands development',
+                    amenities: ['Private Beach', 'Swimming Pool', 'Gym', 'Parking', 'Garden']
+                },
+                {
+                    id: '2',
+                    title: 'Riffa Views Signature Villa',
+                    project: 'Riffa Views',
+                    location: 'Riffa, Bahrain',
+                    type: 'villa',
+                    price: 220000,
+                    size: 350,
+                    bedrooms: 5,
+                    bathrooms: 4,
+                    units: 20,
+                    occupiedUnits: 15,
+                    description: 'Premium villa with panoramic views in Riffa\'s most exclusive neighborhood',
+                    amenities: ['City Views', 'Premium Finishes', 'Smart Home', 'Double Garage']
+                },
+                {
+                    id: '3',
+                    title: 'Saar Premium Villa',
+                    project: 'Saar Gardens',
+                    location: 'Saar, Bahrain',
+                    type: 'villa',
+                    price: 165000,
+                    size: 280,
+                    bedrooms: 4,
+                    bathrooms: 3,
+                    units: 15,
+                    occupiedUnits: 12,
+                    description: 'Modern villa in the tranquil Saar area with beautiful gardens',
+                    amenities: ['Garden View', 'Community Pool', 'Kids Play Area', 'Parking']
+                },
+                {
+                    id: '4',
+                    title: 'Muharraq Heritage Villa',
+                    project: 'Muharraq Heritage',
+                    location: 'Muharraq, Bahrain',
+                    type: 'villa',
+                    price: 145000,
+                    size: 250,
+                    bedrooms: 3,
+                    bathrooms: 2,
+                    units: 18,
+                    occupiedUnits: 13,
+                    description: 'Traditional style villa in the historic Muharraq area',
+                    amenities: ['Heritage Design', 'Courtyard', 'Traditional Features', 'Parking']
+                },
+                {
+                    id: '5',
+                    title: 'Janabiyah Garden Villa',
+                    project: 'Janabiyah Gardens',
+                    location: 'Janabiyah, Bahrain',
+                    type: 'villa',
+                    price: 175000,
+                    size: 320,
+                    bedrooms: 4,
+                    bathrooms: 3,
+                    units: 22,
+                    occupiedUnits: 17,
+                    description: 'Spacious villa surrounded by lush gardens in Janabiyah',
+                    amenities: ['Large Garden', 'Swimming Pool', 'BBQ Area', 'Storage Room']
+                },
+                {
+                    id: '6',
+                    title: 'Budaiya Coastal Villa',
+                    project: 'Budaiya Coast',
+                    location: 'Budaiya, Bahrain',
+                    type: 'villa',
+                    price: 195000,
+                    size: 290,
+                    bedrooms: 4,
+                    bathrooms: 3,
+                    units: 16,
+                    occupiedUnits: 11,
+                    description: 'Beautiful coastal villa with sea views in Budaiya',
+                    amenities: ['Sea View', 'Private Beach Access', 'Terrace', 'Parking']
+                },
+                {
+                    id: '7',
+                    title: 'Jasra Garden Villa',
+                    project: 'Jasra Gardens',
+                    location: 'Al Jasra, Bahrain',
+                    type: 'villa',
+                    price: 155000,
+                    size: 270,
+                    bedrooms: 3,
+                    bathrooms: 3,
+                    units: 20,
+                    occupiedUnits: 16,
+                    description: 'Contemporary villa in the peaceful Al Jasra area',
+                    amenities: ['Modern Design', 'Garden', 'Community Center', 'Parking']
+                },
+                {
+                    id: '8',
+                    title: 'Hamala Royal Villa',
+                    project: 'Hamala Royal',
+                    location: 'Hamala, Bahrain',
+                    type: 'villa',
+                    price: 210000,
+                    size: 340,
+                    bedrooms: 5,
+                    bathrooms: 4,
+                    units: 12,
+                    occupiedUnits: 9,
+                    description: 'Luxurious royal-style villa in the exclusive Hamala district',
+                    amenities: ['Royal Design', 'Large Rooms', 'Premium Location', 'Double Garage']
+                },
+                {
+                    id: '9',
+                    title: 'Zallaq Beach Villa',
+                    project: 'Zallaq Beach',
+                    location: 'Zallaq, Bahrain',
+                    type: 'villa',
+                    price: 230000,
+                    size: 380,
+                    bedrooms: 5,
+                    bathrooms: 4,
+                    units: 14,
+                    occupiedUnits: 10,
+                    description: 'Stunning beachfront villa with direct beach access',
+                    amenities: ['Beachfront', 'Private Beach', 'Sea View', 'Large Terrace']
+                },
+                {
+                    id: '10',
+                    title: 'Isa Town Family Villa',
+                    project: 'Isa Town Family',
+                    location: 'Isa Town, Bahrain',
+                    type: 'villa',
+                    price: 135000,
+                    size: 240,
+                    bedrooms: 3,
+                    bathrooms: 2,
+                    units: 24,
+                    occupiedUnits: 19,
+                    description: 'Family-friendly villa in the established Isa Town community',
+                    amenities: ['Family Area', 'Schools Nearby', 'Community Pool', 'Parking']
+                }
+            ],
+            villaMapData: generateVillaMapData()
+        };
+
+        // Generate villa map data
+        function generateVillaMapData() {
+            const statuses = ['Available', 'Booked', 'Reserved', 'Maintenance'];
+            const statusWeights = [0.48, 0.32, 0.12, 0.08]; // Probability weights
+            const data = [];
+            
+            for (let i = 1; i <= 25; i++) {
+                const randomValue = Math.random();
+                let cumulativeWeight = 0;
+                let status = 'Available';
+                
+                for (let j = 0; j < statuses.length; j++) {
+                    cumulativeWeight += statusWeights[j];
+                    if (randomValue <= cumulativeWeight) {
+                        status = statuses[j];
+                        break;
+                    }
+                }
+                
+                data.push({
+                    unit: `A${i.toString().padStart(2, '0')}`,
+                    status: status,
+                    tenant: status === 'Booked' ? `Tenant ${i}` : null,
+                    rent: status === 'Booked' ? 800 + Math.floor(Math.random() * 400) : null,
+                    size: 150 + Math.floor(Math.random() * 100),
+                    bedrooms: Math.floor(Math.random() * 3) + 2
+                });
+            }
+            
+            return data;
+        }
+
+        // Navigation Functions
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('[id$="-page"]').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + '-page').classList.remove('hidden');
+            document.getElementById(pageId + '-page').classList.add('fade-in');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-blue-600', 'bg-blue-100');
+                link.classList.add('text-gray-600');
+            });
+            
+            event.target.closest('.nav-link').classList.remove('text-gray-600');
+            event.target.closest('.nav-link').classList.add('text-blue-600', 'bg-blue-100');
+            
+            // Load page-specific content
+            if (pageId === 'properties') {
+                loadProperties();
+            } else if (pageId === 'availability') {
+                loadAvailabilityTable();
+            } else if (pageId === 'villa-map') {
+                loadVillaMap();
+            }
+            
+            appState.currentPage = pageId;
+            
+            // Close sidebar on mobile
+            if (window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function logout() {
+            appState.isLoggedIn = false;
+            appState.currentPage = 'login';
+            document.getElementById('app-container').classList.add('hidden');
+            document.getElementById('login-page').classList.remove('hidden');
+        }
+
+        // Login Functions
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulate login (any credentials work in demo mode)
+            appState.isLoggedIn = true;
+            appState.currentPage = 'dashboard';
+            
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+            
+            // Load dashboard by default
+            showPage('dashboard');
+        });
+
+        // Properties Functions
+        function loadProperties() {
+            const grid = document.getElementById('properties-grid');
+            grid.innerHTML = '';
+            
+            appState.properties.forEach(property => {
+                const occupancyRate = Math.round((property.occupiedUnits / property.units) * 100);
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300';
+                card.innerHTML = `
+                    <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                        <span class="text-white text-6xl">🏘️</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${property.title}</h3>
+                        <p class="text-gray-600 mb-4">${property.location}</p>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Price:</span>
+                                <span class="font-medium">BHD ${property.price.toLocaleString()}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Size:</span>
+                                <span class="font-medium">${property.size} sqm</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Occupancy:</span>
+                                <span class="font-medium">${occupancyRate}% (${property.occupiedUnits}/${property.units})</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4 text-xs text-gray-600">
+                                <span>🛏️ ${property.bedrooms} bed</span>
+                                <span>🚿 ${property.bathrooms} bath</span>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${occupancyRate}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Availability Functions
+        function loadAvailabilityTable() {
+            const tbody = document.getElementById('availability-table');
+            tbody.innerHTML = '';
+            
+            appState.properties.forEach(property => {
+                // Generate units for each property
+                const unitsPerProperty = Math.floor(property.units / 3); // Show sample units
+                for (let i = 1; i <= unitsPerProperty; i++) {
+                    const statuses = ['Available', 'Booked', 'Reserved', 'Maintenance'];
+                    const status = statuses[Math.floor(Math.random() * statuses.length)];
+                    
+                    const statusColors = {
+                        'Available': 'bg-green-500',
+                        'Booked': 'bg-red-500',
+                        'Reserved': 'bg-amber-500',
+                        'Maintenance': 'bg-yellow-500'
+                    };
+                    
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${property.title}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            Unit ${String.fromCharCode(65 + Math.floor(i/10))}${(i % 10).toString().padStart(1, '0')}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 ${statusColors[status]} rounded-full mr-2"></div>
+                                <span class="text-sm text-gray-900">${status}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            ${status === 'Booked' ? `Tenant ${i}` : '-'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${status === 'Booked' ? (800 + Math.floor(Math.random() * 400)) : '-'}
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            });
+        }
+
+        // Villa Map Functions
+        function loadVillaMap() {
+            const grid = document.getElementById('villa-map-grid');
+            grid.innerHTML = '';
+            
+            appState.villaMapData.forEach(unit => {
+                const statusColors = {
+                    'Available': 'bg-green-500 hover:bg-green-600',
+                    'Booked': 'bg-red-500 hover:bg-red-600',
+                    'Reserved': 'bg-amber-500 hover:bg-amber-600',
+                    'Maintenance': 'bg-yellow-500 hover:bg-yellow-600'
+                };
+                
+                const unitElement = document.createElement('div');
+                unitElement.className = `villa-unit ${statusColors[unit.status]} text-white p-4 rounded-lg text-center font-bold shadow-lg`;
+                unitElement.innerHTML = `
+                    <div class="text-lg">${unit.unit}</div>
+                    <div class="text-xs mt-1 opacity-80">${unit.status}</div>
+                `;
+                
+                unitElement.addEventListener('click', () => showUnitDetails(unit));
+                grid.appendChild(unitElement);
+            });
+        }
+
+        // Modal Functions
+        function showUnitDetails(unit) {
+            const modal = document.getElementById('unit-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modalContent.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600">Unit Number:</span>
+                        <span class="text-lg font-bold">${unit.unit}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600">Status:</span>
+                        <span class="px-3 py-1 rounded-full text-sm ${getStatusBadgeClass(unit.status)}">${unit.status}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600">Size:</span>
+                        <span class="text-sm">${unit.size} sqm</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600">Bedrooms:</span>
+                        <span class="text-sm">${unit.bedrooms}</span>
+                    </div>
+                    ${unit.tenant ? `
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Tenant:</span>
+                            <span class="text-sm">${unit.tenant}</span>
+                        </div>
+                    ` : ''}
+                    ${unit.rent ? `
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Monthly Rent:</span>
+                            <span class="text-sm font-bold">BHD ${unit.rent}</span>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('unit-modal').classList.add('hidden');
+        }
+
+        function getStatusBadgeClass(status) {
+            const classes = {
+                'Available': 'bg-green-100 text-green-800',
+                'Booked': 'bg-red-100 text-red-800',
+                'Reserved': 'bg-amber-100 text-amber-800',
+                'Maintenance': 'bg-yellow-100 text-yellow-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('unit-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial state
+            if (appState.isLoggedIn) {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                showPage('dashboard');
+            }
+        });
+
+        // Handle window resize for sidebar
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                document.getElementById('sidebar').classList.remove('-translate-x-full');
+                document.getElementById('sidebar-overlay').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

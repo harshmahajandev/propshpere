@@ -1,0 +1,13 @@
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\bin\Debug\net8.0\PropertyManagement.Core.deps.json
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\bin\Debug\net8.0\PropertyManagement.Core.dll
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\bin\Debug\net8.0\PropertyManagement.Core.pdb
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\PropertyManagement.Core.csproj.AssemblyReference.cache
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\PropertyManagement.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\PropertyManagement.Core.AssemblyInfoInputs.cache
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\PropertyManagement.Core.AssemblyInfo.cs
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\PropertyManagement.Core.csproj.CoreCompileInputs.cache
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\PropertyManagement.Core.sourcelink.json
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\PropertyManagement.Core.dll
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\refint\PropertyManagement.Core.dll
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\PropertyManagement.Core.pdb
+D:\work\Prosphere\propshpere\PropertyManagement-MultiTenant\Backend\PropertyManagement.Core\obj\Debug\net8.0\ref\PropertyManagement.Core.dll

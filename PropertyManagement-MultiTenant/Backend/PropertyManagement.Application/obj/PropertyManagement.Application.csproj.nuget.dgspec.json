@@ -1,0 +1,240 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Application\\PropertyManagement.Application.csproj": {}
+  },
+  "projects": {
+    "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Application\\PropertyManagement.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Application\\PropertyManagement.Application.csproj",
+        "projectName": "PropertyManagement.Application",
+        "projectPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Application\\PropertyManagement.Application.csproj",
+        "packagesPath": "C:\\Users\\Harsh\\.nuget\\packages\\",
+        "outputPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Harsh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Core\\PropertyManagement.Core.csproj": {
+                "projectPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Core\\PropertyManagement.Core.csproj"
+              },
+              "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Infrastructure\\PropertyManagement.Infrastructure.csproj": {
+                "projectPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Infrastructure\\PropertyManagement.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Core\\PropertyManagement.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Core\\PropertyManagement.Core.csproj",
+        "projectName": "PropertyManagement.Core",
+        "projectPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Core\\PropertyManagement.Core.csproj",
+        "packagesPath": "C:\\Users\\Harsh\\.nuget\\packages\\",
+        "outputPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Harsh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Infrastructure\\PropertyManagement.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Infrastructure\\PropertyManagement.Infrastructure.csproj",
+        "projectName": "PropertyManagement.Infrastructure",
+        "projectPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Infrastructure\\PropertyManagement.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Harsh\\.nuget\\packages\\",
+        "outputPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Harsh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Core\\PropertyManagement.Core.csproj": {
+                "projectPath": "D:\\work\\Prosphere\\propshpere\\PropertyManagement-MultiTenant\\Backend\\PropertyManagement.Core\\PropertyManagement.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

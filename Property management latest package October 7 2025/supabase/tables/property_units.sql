@@ -1,0 +1,21 @@
+CREATE TABLE property_units (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    property_id UUID NOT NULL,
+    unit_number TEXT NOT NULL,
+    floor_number INTEGER,
+    unit_type TEXT,
+    size DECIMAL(10,2),
+    bedrooms INTEGER,
+    bathrooms INTEGER,
+    price DECIMAL(15,2),
+    status TEXT DEFAULT 'available' CHECK (status IN ('available',
+    'reserved',
+    'sold')),
+    floor_plan_url TEXT,
+    view_type TEXT,
+    premium_features TEXT[],
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text,
+    NOW()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text,
+    NOW()) NOT NULL
+);

@@ -1,0 +1,22 @@
+CREATE TABLE properties (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id),
+    property_code VARCHAR(50) UNIQUE NOT NULL,
+    property_type VARCHAR(50) NOT NULL,
+    unit_number VARCHAR(50),
+    bedrooms INTEGER,
+    bathrooms INTEGER,
+    size_sqm DECIMAL(10,2),
+    price_bhd DECIMAL(12,2),
+    status VARCHAR(30) DEFAULT 'available',
+    floor_plan_url TEXT,
+    virtual_tour_url TEXT,
+    location_coordinates JSONB,
+    amenities TEXT[],
+    completion_date DATE,
+    handover_date DATE,
+    featured_image_url TEXT,
+    gallery_images TEXT[],
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);

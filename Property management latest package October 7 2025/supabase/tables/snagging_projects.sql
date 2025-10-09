@@ -1,0 +1,22 @@
+CREATE TABLE snagging_projects (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    property_id UUID NOT NULL,
+    customer_id UUID NOT NULL,
+    sales_rep_id UUID,
+    status VARCHAR(50) DEFAULT 'identified' CHECK (status IN ('identified',
+    'assigned',
+    'in_progress',
+    'resolved',
+    'verified',
+    'closed')),
+    total_issues INTEGER DEFAULT 0,
+    resolved_issues INTEGER DEFAULT 0,
+    start_date DATE,
+    target_completion_date DATE,
+    actual_completion_date DATE,
+    final_signoff_date DATE,
+    digital_signature TEXT,
+    signoff_by UUID,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);

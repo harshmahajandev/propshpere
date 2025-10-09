@@ -1,0 +1,23 @@
+CREATE TABLE quick_reservations (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    property_id UUID NOT NULL,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255) NOT NULL,
+    customer_phone VARCHAR(50) NOT NULL,
+    nationality VARCHAR(100),
+    budget_range VARCHAR(100),
+    reservation_type VARCHAR(50) DEFAULT 'provisional' CHECK (reservation_type IN ('provisional',
+    'confirmed',
+    'cancelled',
+    'expired')),
+    hold_until DATE,
+    payment_link TEXT,
+    deposit_amount DECIMAL(10,2),
+    deposit_paid BOOLEAN DEFAULT false,
+    deposit_paid_date DATE,
+    lead_id UUID,
+    sales_rep_assigned UUID,
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);

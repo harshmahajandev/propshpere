@@ -1,0 +1,192 @@
+<mat-sidenav-container class="sidenav-container">
+  
+  <mat-sidenav #sidenav mode="side" [opened]="sidenavOpened" class="app-sidenav">
+    <div class="sidenav-header">
+      <mat-icon class="brand-icon">business_center</mat-icon>
+      <div class="brand-text">
+        <h2>ProManage</h2>
+        <span class="version">v1.0</span>
+      </div>
+    </div>
+
+    <mat-nav-list class="nav-list">
+      <h3 class="nav-section-title">MAIN MENU</h3>
+      
+      <mat-list-item class="nav-item" (click)="navigateToDashboard()">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item" (click)="navigateToProperties()">
+        <mat-icon matListItemIcon>apartment</mat-icon>
+        <span matListItemTitle>Properties</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item" (click)="navigateToCustomers()">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Customers</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item" (click)="navigateToInvoices()">
+        <mat-icon matListItemIcon>receipt_long</mat-icon>
+        <span matListItemTitle>Invoices</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item" (click)="navigateToMaintenance()">
+        <mat-icon matListItemIcon>build</mat-icon>
+        <span matListItemTitle>Maintenance</span>
+      </mat-list-item>
+
+      <h3 class="nav-section-title">REPORTS</h3>
+
+      <mat-list-item class="nav-item active">
+        <mat-icon matListItemIcon>analytics</mat-icon>
+        <span matListItemTitle>Analytics</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    
+    <mat-toolbar class="app-toolbar">
+      <button mat-icon-button (click)="toggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <span class="toolbar-title">
+        <mat-icon>analytics</mat-icon>
+        Analytics & Insights
+      </span>
+      
+      <span class="toolbar-spacer"></span>
+      
+      <button mat-icon-button (click)="logout()" matTooltip="Logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="analytics-content">
+      
+      <div class="page-header">
+        <h1><mat-icon>bar_chart</mat-icon> Business Analytics</h1>
+        <p>Key performance indicators and insights</p>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <mat-card class="kpi-card blue">
+          <mat-icon>attach_money</mat-icon>
+          <div class="kpi-content">
+            <div class="kpi-value">${{ totalRevenue | number:'1.0-0' }}</div>
+            <div class="kpi-label">Total Revenue</div>
+          </div>
+        </mat-card>
+
+        <mat-card class="kpi-card green">
+          <mat-icon>trending_up</mat-icon>
+          <div class="kpi-content">
+            <div class="kpi-value">{{ occupancyRate }}%</div>
+            <div class="kpi-label">Occupancy Rate</div>
+          </div>
+        </mat-card>
+
+        <mat-card class="kpi-card purple">
+          <mat-icon>home</mat-icon>
+          <div class="kpi-content">
+            <div class="kpi-value">${{ avgRentPrice | number:'1.0-0' }}</div>
+            <div class="kpi-label">Avg Rent Price</div>
+          </div>
+        </mat-card>
+
+        <mat-card class="kpi-card orange">
+          <mat-icon>description</mat-icon>
+          <div class="kpi-content">
+            <div class="kpi-value">{{ activeLeases }}</div>
+            <div class="kpi-label">Active Leases</div>
+          </div>
+        </mat-card>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="charts-grid">
+        
+        <!-- Revenue Chart -->
+        <mat-card class="chart-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>show_chart</mat-icon>
+              Revenue Trend (6 Months)
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-container">
+              <div class="bar-chart">
+                <div *ngFor="let data of revenueData" class="bar-wrapper">
+                  <div class="bar" [style.height.%]="(data.value / 30000) * 100">
+                    <span class="bar-value">${{ data.value / 1000 }}K</span>
+                  </div>
+                  <span class="bar-label">{{ data.label }}</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Property Distribution -->
+        <mat-card class="chart-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>donut_large</mat-icon>
+              Property Status
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stats-list">
+              <div class="stat-item">
+                <div class="stat-bar-container">
+                  <div class="stat-bar" [style.width.%]="(propertyStats.available / propertyStats.total) * 100" style="background: #10b981"></div>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label">Available</span>
+                  <span class="stat-value">{{ propertyStats.available }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-bar-container">
+                  <div class="stat-bar" [style.width.%]="(propertyStats.rented / propertyStats.total) * 100" style="background: #3b82f6"></div>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label">Rented</span>
+                  <span class="stat-value">{{ propertyStats.rented }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-bar-container">
+                  <div class="stat-bar" [style.width.%]="(propertyStats.sold / propertyStats.total) * 100" style="background: #8b5cf6"></div>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label">Sold</span>
+                  <span class="stat-value">{{ propertyStats.sold }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-bar-container">
+                  <div class="stat-bar" [style.width.%]="(propertyStats.maintenance / propertyStats.total) * 100" style="background: #f59e0b"></div>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label">Maintenance</span>
+                  <span class="stat-value">{{ propertyStats.maintenance }}</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

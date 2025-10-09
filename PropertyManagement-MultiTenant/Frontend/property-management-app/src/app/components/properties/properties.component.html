@@ -1,0 +1,225 @@
+<mat-sidenav-container class="sidenav-container">
+  
+  <!-- Shared Sidenav -->
+  <mat-sidenav #sidenav mode="side" [opened]="sidenavOpened" class="app-sidenav">
+    <div class="sidenav-header">
+      <mat-icon class="brand-icon">business_center</mat-icon>
+      <div class="brand-text">
+        <h2>ProManage</h2>
+        <span class="version">v1.0</span>
+      </div>
+    </div>
+
+    <mat-nav-list class="nav-list">
+      <h3 class="nav-section-title">MAIN MENU</h3>
+      
+      <mat-list-item class="nav-item" (click)="navigateToDashboard()">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item active">
+        <mat-icon matListItemIcon>apartment</mat-icon>
+        <span matListItemTitle>Properties</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Tenants</span>
+        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item">
+        <mat-icon matListItemIcon>receipt_long</mat-icon>
+        <span matListItemTitle>Invoices</span>
+        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item">
+        <mat-icon matListItemIcon>build</mat-icon>
+        <span matListItemTitle>Maintenance</span>
+        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
+      </mat-list-item>
+
+      <h3 class="nav-section-title">REPORTS</h3>
+
+      <mat-list-item class="nav-item">
+        <mat-icon matListItemIcon>analytics</mat-icon>
+        <span matListItemTitle>Analytics</span>
+        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item">
+        <mat-icon matListItemIcon>account_balance</mat-icon>
+        <span matListItemTitle>Financial</span>
+        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
+      </mat-list-item>
+
+      <h3 class="nav-section-title">SETTINGS</h3>
+
+      <mat-list-item class="nav-item">
+        <mat-icon matListItemIcon>settings</mat-icon>
+        <span matListItemTitle>Configuration</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    
+    <!-- Toolbar -->
+    <mat-toolbar class="app-toolbar">
+      <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <span class="toolbar-title">
+        <mat-icon>apartment</mat-icon>
+        Properties Management
+      </span>
+      
+      <span class="toolbar-spacer"></span>
+      
+      <button mat-icon-button matTooltip="Notifications" class="toolbar-icon">
+        <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+      </button>
+
+      <button mat-icon-button (click)="logout()" matTooltip="Logout" class="toolbar-icon">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <!-- Properties Content -->
+    <div class="properties-content">
+      
+      <!-- Header Actions -->
+      <div class="page-header">
+        <div class="header-left">
+          <h1>
+            <mat-icon>apartment</mat-icon>
+            Properties
+          </h1>
+          <p>Manage and track all your properties</p>
+        </div>
+        <div class="header-right">
+          <button mat-raised-button color="primary" (click)="addProperty()" class="add-btn">
+            <mat-icon>add</mat-icon>
+            Add Property
+          </button>
+        </div>
+      </div>
+
+      <!-- Search and Filters -->
+      <mat-card class="filters-card">
+        <div class="filters-container">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search properties</mat-label>
+            <input matInput [(ngModel)]="searchQuery" placeholder="Search by title, location, or type">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Filter by status</mat-label>
+            <mat-select [(ngModel)]="filterStatus">
+              <mat-option value="all">All Statuses</mat-option>
+              <mat-option value="Available">Available</mat-option>
+              <mat-option value="Reserved">Reserved</mat-option>
+              <mat-option value="Sold">Sold</mat-option>
+              <mat-option value="Rented">Rented</mat-option>
+              <mat-option value="Under Maintenance">Under Maintenance</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading properties...</p>
+      </div>
+
+      <!-- Error Message -->
+      <mat-card *ngIf="errorMessage && !loading" class="error-card">
+        <mat-icon>error_outline</mat-icon>
+        <div>
+          <h3>Error</h3>
+          <p>{{ errorMessage }}</p>
+        </div>
+      </mat-card>
+
+      <!-- Empty State -->
+      <mat-card *ngIf="!loading && filteredProperties.length === 0 && !errorMessage" class="empty-state">
+        <mat-icon>home_work</mat-icon>
+        <h3>No Properties Found</h3>
+        <p *ngIf="searchQuery || filterStatus !== 'all'">Try adjusting your search or filters</p>
+        <p *ngIf="!searchQuery && filterStatus === 'all'">Get started by adding your first property</p>
+        <button mat-raised-button color="primary" (click)="addProperty()">
+          <mat-icon>add</mat-icon>
+          Add Your First Property
+        </button>
+      </mat-card>
+
+      <!-- Properties Grid -->
+      <div *ngIf="!loading && filteredProperties.length > 0" class="properties-grid">
+        <mat-card *ngFor="let property of filteredProperties" class="property-card">
+          <div class="property-image">
+            <img [src]="property.images?.[0] || 'assets/placeholder-property.jpg'" [alt]="property.title">
+            <mat-chip class="status-chip" [class]="'status-' + property.status.toLowerCase().replace(' ', '-')">
+              {{ property.status }}
+            </mat-chip>
+          </div>
+          
+          <mat-card-content class="property-content">
+            <h3 class="property-title">{{ property.title }}</h3>
+            <p class="property-location">
+              <mat-icon>location_on</mat-icon>
+              {{ property.location || property.address || 'Location not specified' }}
+            </p>
+            
+            <div class="property-details">
+              <div class="detail">
+                <mat-icon>category</mat-icon>
+                <span>{{ property.propertyType }}</span>
+              </div>
+              <div class="detail" *ngIf="property.bedrooms">
+                <mat-icon>bed</mat-icon>
+                <span>{{ property.bedrooms }} Beds</span>
+              </div>
+              <div class="detail" *ngIf="property.bathrooms">
+                <mat-icon>bathroom</mat-icon>
+                <span>{{ property.bathrooms }} Baths</span>
+              </div>
+              <div class="detail">
+                <mat-icon>square_foot</mat-icon>
+                <span>{{ property.size }} sqft</span>
+              </div>
+            </div>
+
+            <div class="property-price">
+              <span class="price">{{ property.currency }} {{ property.price | number:'1.0-0' }}</span>
+            </div>
+
+            <div class="property-stats">
+              <span matTooltip="Views"><mat-icon>visibility</mat-icon> {{ property.viewCount }}</span>
+              <span matTooltip="Inquiries"><mat-icon>contact_mail</mat-icon> {{ property.inquiryCount }}</span>
+              <span matTooltip="Interest Score"><mat-icon>favorite</mat-icon> {{ property.interestScore }}</span>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions class="property-actions">
+            <button mat-button color="primary" (click)="editProperty(property)">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+            <button mat-button color="warn" (click)="deleteProperty(property)">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

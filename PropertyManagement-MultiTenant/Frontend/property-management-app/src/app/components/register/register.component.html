@@ -1,0 +1,270 @@
+<div class="register-container">
+  <!-- Debug: Component loaded successfully -->
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Property Management System</h1>
+      <p>Register Your Company</p>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-banner" *ngIf="successMessage">
+      <div class="success-content">
+        <h3>✓ Registration Successful!</h3>
+        <p>{{ successMessage }}</p>
+        <div class="company-code-box" *ngIf="companyCode">
+          <p class="code-label">Your Company Code:</p>
+          <p class="code-value">{{ companyCode }}</p>
+          <p class="code-note">⚠️ Please save this code! You'll need it to log in.</p>
+        </div>
+        <p class="redirect-note">Redirecting to login page...</p>
+      </div>
+    </div>
+
+    <!-- Registration Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form" *ngIf="!successMessage">
+      <h2>Company Registration</h2>
+
+      <!-- Company Information Section -->
+      <div class="form-section">
+        <h3>Company Information</h3>
+        
+        <div class="form-field">
+          <label for="companyName">Company Name *</label>
+          <input
+            id="companyName"
+            type="text"
+            formControlName="companyName"
+            placeholder="Enter your company name"
+            [class.error]="hasError('companyName')"
+          />
+          <span class="error-message" *ngIf="hasError('companyName')">
+            {{ getFieldError('companyName') }}
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Brief description of your company"
+            rows="3"
+            [class.error]="hasError('description')"
+          ></textarea>
+          <span class="error-message" *ngIf="hasError('description')">
+            {{ getFieldError('description') }}
+          </span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="industry">Industry</label>
+            <input
+              id="industry"
+              type="text"
+              formControlName="industry"
+              placeholder="e.g., Real Estate, Hospitality"
+              [class.error]="hasError('industry')"
+            />
+            <span class="error-message" *ngIf="hasError('industry')">
+              {{ getFieldError('industry') }}
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label for="contactPhone">Contact Phone</label>
+            <input
+              id="contactPhone"
+              type="tel"
+              formControlName="contactPhone"
+              placeholder="e.g., +1 (555) 123-4567"
+              [class.error]="hasError('contactPhone')"
+            />
+            <span class="error-message" *ngIf="hasError('contactPhone')">
+              {{ getFieldError('contactPhone') }}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="contactEmail">Contact Email *</label>
+          <input
+            id="contactEmail"
+            type="email"
+            formControlName="contactEmail"
+            placeholder="company@example.com"
+            [class.error]="hasError('contactEmail')"
+          />
+          <span class="error-message" *ngIf="hasError('contactEmail')">
+            {{ getFieldError('contactEmail') }}
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="address">Address</label>
+          <input
+            id="address"
+            type="text"
+            formControlName="address"
+            placeholder="Street address"
+            [class.error]="hasError('address')"
+          />
+          <span class="error-message" *ngIf="hasError('address')">
+            {{ getFieldError('address') }}
+          </span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="city">City</label>
+            <input
+              id="city"
+              type="text"
+              formControlName="city"
+              placeholder="City"
+              [class.error]="hasError('city')"
+            />
+            <span class="error-message" *ngIf="hasError('city')">
+              {{ getFieldError('city') }}
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label for="country">Country</label>
+            <input
+              id="country"
+              type="text"
+              formControlName="country"
+              placeholder="Country"
+              [class.error]="hasError('country')"
+            />
+            <span class="error-message" *ngIf="hasError('country')">
+              {{ getFieldError('country') }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin User Section -->
+      <div class="form-section">
+        <h3>Administrator Account</h3>
+        
+        <div class="form-row">
+          <div class="form-field">
+            <label for="adminFirstName">First Name *</label>
+            <input
+              id="adminFirstName"
+              type="text"
+              formControlName="adminFirstName"
+              placeholder="First name"
+              [class.error]="hasError('adminFirstName')"
+            />
+            <span class="error-message" *ngIf="hasError('adminFirstName')">
+              {{ getFieldError('adminFirstName') }}
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label for="adminLastName">Last Name *</label>
+            <input
+              id="adminLastName"
+              type="text"
+              formControlName="adminLastName"
+              placeholder="Last name"
+              [class.error]="hasError('adminLastName')"
+            />
+            <span class="error-message" *ngIf="hasError('adminLastName')">
+              {{ getFieldError('adminLastName') }}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="adminEmail">Admin Email *</label>
+          <input
+            id="adminEmail"
+            type="email"
+            formControlName="adminEmail"
+            placeholder="admin@example.com"
+            [class.error]="hasError('adminEmail')"
+          />
+          <span class="error-message" *ngIf="hasError('adminEmail')">
+            {{ getFieldError('adminEmail') }}
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="adminUsername">Username *</label>
+          <input
+            id="adminUsername"
+            type="text"
+            formControlName="adminUsername"
+            placeholder="Choose a username"
+            [class.error]="hasError('adminUsername')"
+          />
+          <span class="error-message" *ngIf="hasError('adminUsername')">
+            {{ getFieldError('adminUsername') }}
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="adminPassword">Password *</label>
+          <div class="password-field">
+            <input
+              id="adminPassword"
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="adminPassword"
+              placeholder="At least 6 characters"
+              [class.error]="hasError('adminPassword')"
+            />
+            <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">
+              {{ hidePassword ? '👁️' : '🙈' }}
+            </button>
+          </div>
+          <span class="error-message" *ngIf="hasError('adminPassword')">
+            {{ getFieldError('adminPassword') }}
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="adminPasswordConfirm">Confirm Password *</label>
+          <div class="password-field">
+            <input
+              id="adminPasswordConfirm"
+              [type]="hideConfirmPassword ? 'password' : 'text'"
+              formControlName="adminPasswordConfirm"
+              placeholder="Re-enter your password"
+              [class.error]="hasError('adminPasswordConfirm')"
+            />
+            <button type="button" class="toggle-password" (click)="hideConfirmPassword = !hideConfirmPassword">
+              {{ hideConfirmPassword ? '👁️' : '🙈' }}
+            </button>
+          </div>
+          <span class="error-message" *ngIf="hasError('adminPasswordConfirm')">
+            {{ getFieldError('adminPasswordConfirm') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="error-banner" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="loading || registerForm.invalid">
+          <span *ngIf="!loading">Register Company</span>
+          <span *ngIf="loading">Registering...</span>
+        </button>
+
+        <button type="button" class="btn-secondary" (click)="goToLogin()" [disabled]="loading">
+          Back to Login
+        </button>
+      </div>
+    </form>
+
+    <div class="register-footer">
+      <p>© 2025 Property Management System. All rights reserved.</p>
+    </div>
+  </div>
+</div>
+

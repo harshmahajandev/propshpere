@@ -1,0 +1,177 @@
+<mat-sidenav-container class="sidenav-container">
+  
+  <!-- Shared Sidenav -->
+  <mat-sidenav #sidenav mode="side" [opened]="sidenavOpened" class="app-sidenav">
+    <div class="sidenav-header">
+      <mat-icon class="brand-icon">business_center</mat-icon>
+      <div class="brand-text">
+        <h2>ProManage</h2>
+        <span class="version">v1.0</span>
+      </div>
+    </div>
+
+    <mat-nav-list class="nav-list">
+      <h3 class="nav-section-title">MAIN MENU</h3>
+      
+      <mat-list-item class="nav-item" (click)="navigateToDashboard()">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item" (click)="navigateToProperties()">
+        <mat-icon matListItemIcon>apartment</mat-icon>
+        <span matListItemTitle>Properties</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item active">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Customers</span>
+      </mat-list-item>
+
+      <mat-list-item class="nav-item">
+        <mat-icon matListItemIcon>receipt_long</mat-icon>
+        <span matListItemTitle>Invoices</span>
+        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    
+    <mat-toolbar class="app-toolbar">
+      <button mat-icon-button (click)="toggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <span class="toolbar-title">
+        <mat-icon>people</mat-icon>
+        Customers & Tenants
+      </span>
+      
+      <span class="toolbar-spacer"></span>
+      
+      <button mat-icon-button (click)="logout()" matTooltip="Logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="customers-content">
+      
+      <div class="page-header">
+        <div class="header-left">
+          <h1><mat-icon>people</mat-icon> Customers</h1>
+          <p>Manage your customer relationships</p>
+        </div>
+        <button mat-raised-button color="primary" (click)="addCustomer()" class="add-btn">
+          <mat-icon>person_add</mat-icon>
+          Add Customer
+        </button>
+      </div>
+
+      <mat-card class="filters-card">
+        <div class="filters-container">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search customers</mat-label>
+            <input matInput [(ngModel)]="searchQuery" placeholder="Name, email, or phone">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Filter by type</mat-label>
+            <mat-select [(ngModel)]="filterType">
+              <mat-option value="all">All Types</mat-option>
+              <mat-option value="Individual">Individual</mat-option>
+              <mat-option value="Corporate">Corporate</mat-option>
+              <mat-option value="Investor">Investor</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card>
+
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading customers...</p>
+      </div>
+
+      <mat-card *ngIf="errorMessage && !loading" class="error-card">
+        <mat-icon>error_outline</mat-icon>
+        <div>
+          <h3>Error</h3>
+          <p>{{ errorMessage }}</p>
+        </div>
+      </mat-card>
+
+      <mat-card *ngIf="!loading && filteredCustomers.length === 0 && !errorMessage" class="empty-state">
+        <mat-icon>people_outline</mat-icon>
+        <h3>No Customers Found</h3>
+        <p *ngIf="searchQuery || filterType !== 'all'">Try adjusting your search or filters</p>
+        <p *ngIf="!searchQuery && filterType === 'all'">Add your first customer to get started</p>
+        <button mat-raised-button color="primary" (click)="addCustomer()">
+          <mat-icon>person_add</mat-icon>
+          Add Your First Customer
+        </button>
+      </mat-card>
+
+      <div *ngIf="!loading && filteredCustomers.length > 0" class="customers-grid">
+        <mat-card *ngFor="let customer of filteredCustomers" class="customer-card">
+          <mat-card-content>
+            <div class="customer-header">
+              <div class="avatar">
+                <mat-icon>account_circle</mat-icon>
+              </div>
+              <div class="customer-info">
+                <h3>{{ customer.fullName }}</h3>
+                <p>{{ customer.email }}</p>
+              </div>
+              <mat-chip [class]="'type-chip type-' + customer.customerType.toLowerCase()">
+                {{ customer.customerType }}
+              </mat-chip>
+            </div>
+
+            <div class="customer-details">
+              <div class="detail" *ngIf="customer.phone">
+                <mat-icon>phone</mat-icon>
+                <span>{{ customer.phone }}</span>
+              </div>
+              <div class="detail" *ngIf="customer.nationality">
+                <mat-icon>public</mat-icon>
+                <span>{{ customer.nationality }}</span>
+              </div>
+              <div class="detail">
+                <mat-icon>warning</mat-icon>
+                <mat-chip [class]="'risk-chip risk-' + customer.riskLevel.toLowerCase()" class="small-chip">
+                  {{ customer.riskLevel }} Risk
+                </mat-chip>
+              </div>
+            </div>
+
+            <div class="customer-stats">
+              <div class="stat">
+                <span class="stat-value">{{ customer.propertiesPurchased }}</span>
+                <span class="stat-label">Properties</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">${{ customer.totalPurchaseValue | number:'1.0-0' }}</span>
+                <span class="stat-label">Total Value</span>
+              </div>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-button color="primary" (click)="editCustomer(customer)">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+            <button mat-button color="warn" (click)="deleteCustomer(customer)">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
