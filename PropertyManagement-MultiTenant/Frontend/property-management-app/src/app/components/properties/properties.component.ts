@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PropertyService } from '../../services/property.service';
-import { Property } from '../../models/property.model';
+import { Property, PropertyFormData, PropertyStatus } from '../../models/property.model';
 
 @Component({
   selector: 'app-properties',
@@ -10,108 +10,329 @@ import { Property } from '../../models/property.model';
 })
 export class PropertiesComponent implements OnInit {
   properties: Property[] = [];
+  filteredProperties: Property[] = [];
   loading = false;
-  errorMessage = '';
-  searchQuery = '';
-  filterStatus = 'all';
-  sidenavOpened = true;
+  viewMode: 'grid' | 'table' = 'grid';
+  
+  // Form and Dialog
+  showDialog = false;
+  isEditMode = false;
+  propertyForm!: FormGroup;
+  selectedProperty: Property | null = null;
+
+  // Filters
+  searchTerm = '';
+  statusFilter = 'all';
+  typeFilter = 'all';
+
+  // Table columns
+  displayedColumns: string[] = ['name', 'type', 'address', 'price', 'status', 'actions'];
+
+  propertyTypes = ['Apartment', 'Villa', 'Commercial', 'Land', 'Penthouse'];
+  propertyStatuses = ['Available', 'Rented', 'Sold', 'Maintenance'];
 
   constructor(
     private propertyService: PropertyService,
-    private router: Router
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
+    this.initializeForm();
     this.loadProperties();
-    
-    // Auto-collapse sidenav on mobile
-    if (window.innerWidth < 768) {
-      this.sidenavOpened = false;
-    }
+  }
+
+  initializeForm(): void {
+    this.propertyForm = this.formBuilder.group({
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', Validators.maxLength(1000)],
+      propertyType: ['', Validators.required],
+      address: ['', Validators.maxLength(500)],
+      location: ['', Validators.maxLength(200)],
+      price: [0, [Validators.required, Validators.min(0)]],
+      currency: ['BHD', Validators.required],
+      size: [0, [Validators.required, Validators.min(0)]],
+      bedrooms: [0, Validators.min(0)],
+      bathrooms: [0, Validators.min(0)],
+      status: [PropertyStatus.Available, Validators.required],
+      project: [''],
+      island: ['']
+    });
   }
 
   loadProperties(): void {
     this.loading = true;
-    this.errorMessage = '';
+    
+    // For now, use mock data since backend might not be ready
+    setTimeout(() => {
+      this.properties = this.getMockProperties();
+      this.filteredProperties = [...this.properties];
+      this.loading = false;
+    }, 500);
 
-    this.propertyService.getProperties().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.properties = response.data;
-        } else {
-          this.errorMessage = response.message || 'Failed to load properties';
-        }
-        this.loading = false;
+    // When backend is ready, use this:
+    // this.propertyService.getProperties().subscribe({
+    //   next: (response) => {
+    //     if (response.success) {
+    //       this.properties = response.data;
+    //       this.applyFilters();
+    //     }
+    //     this.loading = false;
+    //   },
+    //   error: (error) => {
+    //     console.error('Error loading properties:', error);
+    //     this.loading = false;
+    //   }
+    // });
+  }
+
+  getMockProperties(): Property[] {
+    return [
+      {
+        id: '1',
+        title: 'Luxury Villa Downtown',
+        description: 'Beautiful 4-bedroom villa in prime location',
+        propertyType: 'Villa',
+        address: '123 Main Street',
+        location: 'Dubai',
+        price: 850000,
+        currency: 'BHD',
+        size: 325,
+        bedrooms: 4,
+        bathrooms: 3,
+        status: PropertyStatus.Available,
+        images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400'],
+        interestScore: 0,
+        viewCount: 0,
+        inquiryCount: 0,
+        createdById: '',
+        companyId: '',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
-      error: (error) => {
-        this.errorMessage = error.error?.message || 'An error occurred while loading properties';
-        this.loading = false;
+      {
+        id: '2',
+        title: 'Modern Apartment',
+        description: '2-bedroom apartment with city view',
+        propertyType: 'Apartment',
+        address: '456 Park Avenue',
+        location: 'Abu Dhabi',
+        price: 450000,
+        currency: 'BHD',
+        size: 111,
+        bedrooms: 2,
+        bathrooms: 2,
+        status: PropertyStatus.Rented,
+        images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400'],
+        interestScore: 0,
+        viewCount: 0,
+        inquiryCount: 0,
+        createdById: '',
+        companyId: '',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: '3',
+        title: 'Commercial Space',
+        description: 'Prime commercial property for business',
+        propertyType: 'Commercial',
+        address: '789 Business Bay',
+        location: 'Dubai',
+        price: 1200000,
+        currency: 'BHD',
+        size: 465,
+        bedrooms: 0,
+        bathrooms: 3,
+        status: PropertyStatus.Available,
+        images: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400'],
+        interestScore: 0,
+        viewCount: 0,
+        inquiryCount: 0,
+        createdById: '',
+        companyId: '',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: '4',
+        title: 'Beachfront Penthouse',
+        description: 'Luxurious penthouse with ocean views',
+        propertyType: 'Apartment',
+        address: '321 Beach Road',
+        location: 'Dubai',
+        price: 2500000,
+        currency: 'BHD',
+        size: 418,
+        bedrooms: 5,
+        bathrooms: 4,
+        status: PropertyStatus.Available,
+        images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400'],
+        interestScore: 0,
+        viewCount: 0,
+        inquiryCount: 0,
+        createdById: '',
+        companyId: '',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
+    ];
+  }
+
+  applyFilters(): void {
+    this.filteredProperties = this.properties.filter(property => {
+      const matchesSearch = !this.searchTerm || 
+        property.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (property.address && property.address.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
+        (property.location && property.location.toLowerCase().includes(this.searchTerm.toLowerCase()));
+      
+      const matchesStatus = this.statusFilter === 'all' || property.status === this.statusFilter;
+      const matchesType = this.typeFilter === 'all' || property.propertyType === this.typeFilter;
+      
+      return matchesSearch && matchesStatus && matchesType;
     });
   }
 
-  toggleSidenav(): void {
-    this.sidenavOpened = !this.sidenavOpened;
+  onSearchChange(): void {
+    this.applyFilters();
   }
 
-  addProperty(): void {
-    this.router.navigate(['/properties/add']);
+  onStatusFilterChange(): void {
+    this.applyFilters();
   }
 
-  editProperty(property: Property): void {
-    this.router.navigate(['/properties/edit', property.id]);
+  onTypeFilterChange(): void {
+    this.applyFilters();
+  }
+
+  toggleViewMode(): void {
+    this.viewMode = this.viewMode === 'grid' ? 'table' : 'grid';
+  }
+
+  openCreateDialog(): void {
+    this.isEditMode = false;
+    this.selectedProperty = null;
+    this.propertyForm.reset({ status: PropertyStatus.Available, currency: 'BHD' });
+    this.showDialog = true;
+  }
+
+  openEditDialog(property: Property): void {
+    this.isEditMode = true;
+    this.selectedProperty = property;
+    this.propertyForm.patchValue(property);
+    this.showDialog = true;
+  }
+
+  closeDialog(): void {
+    this.showDialog = false;
+    this.propertyForm.reset();
+    this.selectedProperty = null;
+  }
+
+  saveProperty(): void {
+    if (this.propertyForm.invalid) {
+      Object.keys(this.propertyForm.controls).forEach(key => {
+        this.propertyForm.get(key)?.markAsTouched();
+      });
+      return;
+    }
+
+    const formData: PropertyFormData = this.propertyForm.value;
+
+    if (this.isEditMode && this.selectedProperty) {
+      // Update existing property
+      // this.propertyService.updateProperty(this.selectedProperty.id, formData).subscribe({
+      //   next: (response) => {
+      //     if (response.success) {
+      //       this.loadProperties();
+      //       this.closeDialog();
+      //     }
+      //   },
+      //   error: (error) => console.error('Error updating property:', error)
+      // });
+
+      // Mock update
+      const index = this.properties.findIndex(p => p.id === this.selectedProperty!.id);
+      if (index !== -1) {
+        this.properties[index] = { 
+          ...this.properties[index], 
+          ...formData,
+          updatedAt: new Date()
+        };
+        this.applyFilters();
+      }
+      this.closeDialog();
+    } else {
+      // Create new property
+      // this.propertyService.createProperty(formData).subscribe({
+      //   next: (response) => {
+      //     if (response.success) {
+      //       this.loadProperties();
+      //       this.closeDialog();
+      //     }
+      //   },
+      //   error: (error) => console.error('Error creating property:', error)
+      // });
+
+      // Mock create
+      const newProperty: Property = {
+        id: (this.properties.length + 1).toString(),
+        ...formData,
+        interestScore: 0,
+        viewCount: 0,
+        inquiryCount: 0,
+        createdById: '',
+        companyId: '',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.properties.push(newProperty);
+      this.applyFilters();
+      this.closeDialog();
+    }
   }
 
   deleteProperty(property: Property): void {
     if (confirm(`Are you sure you want to delete "${property.title}"?`)) {
-      this.propertyService.deleteProperty(property.id).subscribe({
-        next: () => {
-          this.loadProperties();
-        },
-        error: (error) => {
-          this.errorMessage = error.error?.message || 'Failed to delete property';
-        }
-      });
+      // this.propertyService.deleteProperty(property.id).subscribe({
+      //   next: (response) => {
+      //     if (response.success) {
+      //       this.loadProperties();
+      //     }
+      //   },
+      //   error: (error) => console.error('Error deleting property:', error)
+      // });
+
+      // Mock delete
+      this.properties = this.properties.filter(p => p.id !== property.id);
+      this.applyFilters();
     }
   }
 
   getStatusColor(status: string): string {
-    const statusColors: { [key: string]: string } = {
-      'Available': 'success',
-      'Reserved': 'warning',
-      'Sold': 'primary',
-      'Rented': 'accent',
-      'Under Maintenance': 'warn'
+    const colors: { [key: string]: string } = {
+      'Available': '#10b981',
+      'Rented': '#f59e0b',
+      'Sold': '#ef4444',
+      'Maintenance': '#6b7280'
     };
-    return statusColors[status] || 'default';
+    return colors[status] || '#6b7280';
   }
 
-  get filteredProperties(): Property[] {
-    let filtered = this.properties;
-
-    if (this.searchQuery) {
-      const query = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(p => 
-        p.title.toLowerCase().includes(query) ||
-        p.location?.toLowerCase().includes(query) ||
-        p.propertyType.toLowerCase().includes(query)
-      );
+  getFieldError(fieldName: string): string {
+    const field = this.propertyForm.get(fieldName);
+    
+    if (field?.hasError('required')) return 'This field is required';
+    if (field?.hasError('min')) return 'Value must be greater than 0';
+    if (field?.hasError('maxlength')) {
+      const maxLength = field.errors?.['maxlength'].requiredLength;
+      return `Maximum length is ${maxLength} characters`;
     }
-
-    if (this.filterStatus !== 'all') {
-      filtered = filtered.filter(p => p.status === this.filterStatus);
-    }
-
-    return filtered;
+    
+    return '';
   }
 
-  navigateToDashboard(): void {
-    this.router.navigate(['/dashboard']);
-  }
-
-  logout(): void {
-    // Implement logout
-    this.router.navigate(['/login']);
+  hasError(fieldName: string): boolean {
+    const field = this.propertyForm.get(fieldName);
+    return !!(field && field.invalid && field.touched);
   }
 }
-

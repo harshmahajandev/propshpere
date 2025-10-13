@@ -1,0 +1,82 @@
+<div class="layout-container">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <button mat-icon-button (click)="toggleSidebar()" class="menu-toggle">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <h1 class="app-title">{{ companyName }}</h1>
+    </div>
+
+    <div class="header-right">
+      <button mat-icon-button class="notification-btn">
+        <mat-icon [matBadge]="3" matBadgeColor="warn">notifications</mat-icon>
+      </button>
+
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+        <div class="user-avatar">{{ userInitials }}</div>
+        <span class="user-name">{{ userFullName }}</span>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+
+      <mat-menu #userMenu="matMenu">
+        <div class="user-menu-header">
+          <div class="user-avatar-large">{{ userInitials }}</div>
+          <div class="user-info">
+            <p class="user-name-large">{{ userFullName }}</p>
+            <p class="user-role">{{ currentUser?.role }}</p>
+            <p class="user-company">{{ companyName }}</p>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Settings</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </div>
+  </header>
+
+  <!-- Sidebar and Content -->
+  <div class="app-body">
+    <aside class="app-sidebar" [class.collapsed]="isCollapsed">
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <li *ngFor="let item of menuItems" class="nav-item" [class.hidden]="!hasAccess(item.roles)">
+            <a 
+              [routerLink]="item.route" 
+              routerLinkActive="active" 
+              class="nav-link"
+              [matTooltip]="isCollapsed ? item.label : ''"
+              matTooltipPosition="right"
+            >
+              <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+              <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button mat-button class="collapse-btn" (click)="toggleSidebar()">
+          <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+          <span *ngIf="!isCollapsed">Collapse</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="app-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+

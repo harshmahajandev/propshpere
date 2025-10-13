@@ -2,7 +2,7 @@
 
 .maintenance-content {
   padding: 1.5rem;
-  background: $gray-50;
+  background: #f9fafb;
   min-height: calc(100vh - 64px);
 }
 
@@ -29,7 +29,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border-bottom: 1px solid $gray-200;
+  border-bottom: 1px solid #e5e7eb;
   flex-wrap: wrap;
   gap: 0.75rem;
 
@@ -39,10 +39,10 @@
     gap: 0.5rem;
     font-size: 1rem;
     font-weight: 700;
-    color: $gray-900;
+    color: #111827;
 
     mat-icon {
-      color: $primary-blue;
+      color: #3b82f6;
       font-size: 1.25rem;
       width: 1.25rem;
       height: 1.25rem;
@@ -72,22 +72,22 @@
 
   &.priority-low {
     background: #d1fae5 !important;
-    color: $success-green !important;
+    color: #10b981 !important;
   }
 
   &.priority-medium {
     background: #dbeafe !important;
-    color: $primary-blue !important;
+    color: #3b82f6 !important;
   }
 
   &.priority-high {
     background: #fed7aa !important;
-    color: $warning-orange !important;
+    color: #f59e0b !important;
   }
 
   &.priority-urgent {
     background: #fee2e2 !important;
-    color: $danger-red !important;
+    color: #ef4444 !important;
   }
 }
 
@@ -96,24 +96,24 @@
   height: 24px !important;
   font-weight: 600 !important;
 
-  &.status-open { background: #dbeafe !important; color: $primary-blue !important; }
-  &.status-in-progress { background: #fef3c7 !important; color: $warning-orange !important; }
+  &.status-open { background: #dbeafe !important; color: #3b82f6 !important; }
+  &.status-in-progress { background: #fef3c7 !important; color: #f59e0b !important; }
   &.status-on-hold { background: #fed7aa !important; color: #d97706 !important; }
-  &.status-resolved { background: #d1fae5 !important; color: $success-green !important; }
-  &.status-closed { background: $gray-300 !important; color: $gray-700 !important; }
+  &.status-resolved { background: #d1fae5 !important; color: #10b981 !important; }
+  &.status-closed { background: #d1d5db !important; color: #374151 !important; }
 }
 
 .ticket-subject {
   margin: 1.25rem 0 0.75rem 0;
   font-size: 1.125rem;
   font-weight: 700;
-  color: $gray-900;
+  color: #111827;
   line-height: 1.4;
 }
 
 .ticket-description {
   margin: 0 0 1.25rem 0;
-  color: $gray-600;
+  color: #6b7280;
   font-size: 0.9rem;
   line-height: 1.5;
   display: -webkit-box;
@@ -132,13 +132,13 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.85rem;
-    color: $gray-700;
+    color: #374151;
 
     mat-icon {
       font-size: 1rem;
       width: 1rem;
       height: 1rem;
-      color: $gray-600;
+      color: #6b7280;
     }
   }
 }

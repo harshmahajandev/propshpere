@@ -49,7 +49,7 @@ export interface PropertyFormData {
   title: string;
   description?: string;
   propertyType: string;
-  status: string;
+  status: PropertyStatus;
   price: number;
   currency: string;
   size: number;
@@ -59,9 +59,6 @@ export interface PropertyFormData {
   project?: string;
   island?: string;
   address?: string;
-  latitude?: number;
-  longitude?: number;
-  amenities?: string;
 }
 
 export interface ApiResponse<T> {

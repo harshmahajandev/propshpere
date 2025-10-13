@@ -1,4 +1,72 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body { 
+  height: 100%; 
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent horizontal scroll globally */
+* {
+  box-sizing: border-box;
+}
+
+/* Remove default Material margins that can cause overflow */
+.mat-mdc-card {
+  max-width: 100%;
+}
+
+.mat-drawer-container {
+  overflow-x: hidden !important;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Clean scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Enhanced Material Card styling */
+.mat-mdc-card {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Prevent text from causing overflow */
+h1, h2, h3, h4, h5, h6, p, span, div {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Clean focus states - Real Estate Green */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}

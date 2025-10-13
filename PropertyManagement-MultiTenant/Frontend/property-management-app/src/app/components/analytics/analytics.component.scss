@@ -2,7 +2,7 @@
 
 .analytics-content {
   padding: 1.5rem;
-  background: $gray-50;
+  background: #f9fafb;
   min-height: calc(100vh - 64px);
 }
 
@@ -16,10 +16,10 @@
     margin: 0 0 0.5rem 0;
     font-size: 2rem;
     font-weight: 700;
-    color: $gray-900;
+    color: #111827;
 
     mat-icon {
-      color: $primary-blue;
+      color: #3b82f6;
       font-size: 2rem;
       width: 2rem;
       height: 2rem;
@@ -28,7 +28,7 @@
 
   p {
     margin: 0;
-    color: $gray-600;
+    color: #6b7280;
     font-size: 1rem;
   }
 }
@@ -64,23 +64,23 @@
   }
 
   &.blue {
-    mat-icon { color: $secondary-blue; }
-    &::before { background: $secondary-blue; }
+    mat-icon { color: #60a5fa; }
+    &::before { background: #60a5fa; }
   }
 
   &.green {
-    mat-icon { color: $success-green; }
-    &::before { background: $success-green; }
+    mat-icon { color: #10b981; }
+    &::before { background: #10b981; }
   }
 
   &.purple {
-    mat-icon { color: $accent-purple; }
-    &::before { background: $accent-purple; }
+    mat-icon { color: #8b5cf6; }
+    &::before { background: #8b5cf6; }
   }
 
   &.orange {
-    mat-icon { color: $warning-orange; }
-    &::before { background: $warning-orange; }
+    mat-icon { color: #f59e0b; }
+    &::before { background: #f59e0b; }
   }
 
   mat-icon {
@@ -97,14 +97,14 @@
     .kpi-value {
       font-size: 2rem;
       font-weight: 700;
-      color: $gray-900;
+      color: #111827;
       line-height: 1;
       margin-bottom: 0.5rem;
     }
 
     .kpi-label {
       font-size: 0.875rem;
-      color: $gray-600;
+      color: #6b7280;
       font-weight: 600;
     }
   }
@@ -135,10 +135,10 @@
       gap: 0.5rem;
       font-size: 1.125rem !important;
       font-weight: 600 !important;
-      color: $gray-900 !important;
+      color: #111827 !important;
 
       mat-icon {
-        color: $primary-blue;
+        color: #3b82f6;
         font-size: 1.25rem;
         width: 1.25rem;
         height: 1.25rem;
@@ -177,7 +177,7 @@
   .bar {
     width: 100%;
     min-height: 40px;
-    background: linear-gradient(180deg, $secondary-blue 0%, $primary-blue 100%);
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
     border-radius: 8px 8px 0 0;
     position: relative;
     transition: all 0.3s;
@@ -188,7 +188,7 @@
     padding-top: 0.5rem;
 
     &:hover {
-      background: linear-gradient(180deg, #60a5fa 0%, $secondary-blue 100%);
+      background: linear-gradient(180deg, #60a5fa 0%, #60a5fa 100%);
       transform: scaleY(1.02);
     }
 
@@ -202,7 +202,7 @@
   .bar-label {
     margin-top: 0.5rem;
     font-size: 0.875rem;
-    color: $gray-600;
+    color: #6b7280;
     font-weight: 600;
   }
 }
@@ -221,7 +221,7 @@
   .stat-bar-container {
     flex: 1;
     height: 32px;
-    background: $gray-100;
+    background: #f3f4f6;
     border-radius: 8px;
     overflow: hidden;
     position: relative;
@@ -248,14 +248,14 @@
 
     .stat-label {
       font-size: 0.875rem;
-      color: $gray-600;
+      color: #6b7280;
       font-weight: 600;
     }
 
     .stat-value {
       font-size: 1.5rem;
       font-weight: 700;
-      color: $gray-900;
+      color: #111827;
     }
   }
 }

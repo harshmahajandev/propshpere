@@ -1,225 +1,279 @@
-<mat-sidenav-container class="sidenav-container">
-  
-  <!-- Shared Sidenav -->
-  <mat-sidenav #sidenav mode="side" [opened]="sidenavOpened" class="app-sidenav">
-    <div class="sidenav-header">
-      <mat-icon class="brand-icon">business_center</mat-icon>
-      <div class="brand-text">
-        <h2>ProManage</h2>
-        <span class="version">v1.0</span>
-      </div>
+<div class="properties-container">
+  <!-- Header -->
+  <div class="properties-header">
+    <div class="header-content">
+      <h1><mat-icon>home_work</mat-icon> Properties</h1>
+      <p>Manage your property portfolio</p>
     </div>
-
-    <mat-nav-list class="nav-list">
-      <h3 class="nav-section-title">MAIN MENU</h3>
-      
-      <mat-list-item class="nav-item" (click)="navigateToDashboard()">
-        <mat-icon matListItemIcon>dashboard</mat-icon>
-        <span matListItemTitle>Dashboard</span>
-      </mat-list-item>
-
-      <mat-list-item class="nav-item active">
-        <mat-icon matListItemIcon>apartment</mat-icon>
-        <span matListItemTitle>Properties</span>
-      </mat-list-item>
-
-      <mat-list-item class="nav-item">
-        <mat-icon matListItemIcon>people</mat-icon>
-        <span matListItemTitle>Tenants</span>
-        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
-      </mat-list-item>
-
-      <mat-list-item class="nav-item">
-        <mat-icon matListItemIcon>receipt_long</mat-icon>
-        <span matListItemTitle>Invoices</span>
-        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
-      </mat-list-item>
-
-      <mat-list-item class="nav-item">
-        <mat-icon matListItemIcon>build</mat-icon>
-        <span matListItemTitle>Maintenance</span>
-        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
-      </mat-list-item>
-
-      <h3 class="nav-section-title">REPORTS</h3>
-
-      <mat-list-item class="nav-item">
-        <mat-icon matListItemIcon>analytics</mat-icon>
-        <span matListItemTitle>Analytics</span>
-        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
-      </mat-list-item>
-
-      <mat-list-item class="nav-item">
-        <mat-icon matListItemIcon>account_balance</mat-icon>
-        <span matListItemTitle>Financial</span>
-        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
-      </mat-list-item>
-
-      <h3 class="nav-section-title">SETTINGS</h3>
-
-      <mat-list-item class="nav-item">
-        <mat-icon matListItemIcon>settings</mat-icon>
-        <span matListItemTitle>Configuration</span>
-      </mat-list-item>
-    </mat-nav-list>
-  </mat-sidenav>
-
-  <!-- Main Content -->
-  <mat-sidenav-content>
-    
-    <!-- Toolbar -->
-    <mat-toolbar class="app-toolbar">
-      <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
-        <mat-icon>menu</mat-icon>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Add Property
       </button>
-      
-      <span class="toolbar-title">
-        <mat-icon>apartment</mat-icon>
-        Properties Management
-      </span>
-      
-      <span class="toolbar-spacer"></span>
-      
-      <button mat-icon-button matTooltip="Notifications" class="toolbar-icon">
-        <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <mat-card class="filters-card">
+    <div class="filters-container">
+      <mat-form-field class="search-field" appearance="outline">
+        <mat-label>Search properties</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" placeholder="Search by name, address, or city">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="statusFilter" (selectionChange)="onStatusFilterChange()">
+          <mat-option value="all">All Statuses</mat-option>
+          <mat-option *ngFor="let status of propertyStatuses" [value]="status">{{ status }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select [(ngModel)]="typeFilter" (selectionChange)="onTypeFilterChange()">
+          <mat-option value="all">All Types</mat-option>
+          <mat-option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-icon-button (click)="toggleViewMode()" matTooltip="Toggle View">
+        <mat-icon>{{ viewMode === 'grid' ? 'view_list' : 'grid_view' }}</mat-icon>
       </button>
+    </div>
+  </mat-card>
 
-      <button mat-icon-button (click)="logout()" matTooltip="Logout" class="toolbar-icon">
-        <mat-icon>logout</mat-icon>
-      </button>
-    </mat-toolbar>
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading properties...</p>
+  </div>
 
-    <!-- Properties Content -->
-    <div class="properties-content">
-      
-      <!-- Header Actions -->
-      <div class="page-header">
-        <div class="header-left">
-          <h1>
-            <mat-icon>apartment</mat-icon>
-            Properties
-          </h1>
-          <p>Manage and track all your properties</p>
+  <!-- Properties Grid View -->
+  <div *ngIf="!loading && viewMode === 'grid'" class="properties-grid">
+    <mat-card *ngFor="let property of filteredProperties" class="property-card">
+      <img mat-card-image [src]="property.images?.[0] || 'assets/placeholder.jpg'" [alt]="property.title" class="property-image">
+      <mat-card-content>
+        <div class="property-status">
+          <mat-chip [style.background]="getStatusColor(property.status) + '20'" 
+                    [style.color]="getStatusColor(property.status)">
+            {{ property.status }}
+          </mat-chip>
         </div>
-        <div class="header-right">
-          <button mat-raised-button color="primary" (click)="addProperty()" class="add-btn">
-            <mat-icon>add</mat-icon>
-            Add Property
-          </button>
-        </div>
-      </div>
-
-      <!-- Search and Filters -->
-      <mat-card class="filters-card">
-        <div class="filters-container">
-          <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Search properties</mat-label>
-            <input matInput [(ngModel)]="searchQuery" placeholder="Search by title, location, or type">
-            <mat-icon matPrefix>search</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Filter by status</mat-label>
-            <mat-select [(ngModel)]="filterStatus">
-              <mat-option value="all">All Statuses</mat-option>
-              <mat-option value="Available">Available</mat-option>
-              <mat-option value="Reserved">Reserved</mat-option>
-              <mat-option value="Sold">Sold</mat-option>
-              <mat-option value="Rented">Rented</mat-option>
-              <mat-option value="Under Maintenance">Under Maintenance</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </mat-card>
-
-      <!-- Loading State -->
-      <div *ngIf="loading" class="loading-container">
-        <mat-spinner></mat-spinner>
-        <p>Loading properties...</p>
-      </div>
-
-      <!-- Error Message -->
-      <mat-card *ngIf="errorMessage && !loading" class="error-card">
-        <mat-icon>error_outline</mat-icon>
-        <div>
-          <h3>Error</h3>
-          <p>{{ errorMessage }}</p>
-        </div>
-      </mat-card>
-
-      <!-- Empty State -->
-      <mat-card *ngIf="!loading && filteredProperties.length === 0 && !errorMessage" class="empty-state">
-        <mat-icon>home_work</mat-icon>
-        <h3>No Properties Found</h3>
-        <p *ngIf="searchQuery || filterStatus !== 'all'">Try adjusting your search or filters</p>
-        <p *ngIf="!searchQuery && filterStatus === 'all'">Get started by adding your first property</p>
-        <button mat-raised-button color="primary" (click)="addProperty()">
-          <mat-icon>add</mat-icon>
-          Add Your First Property
-        </button>
-      </mat-card>
-
-      <!-- Properties Grid -->
-      <div *ngIf="!loading && filteredProperties.length > 0" class="properties-grid">
-        <mat-card *ngFor="let property of filteredProperties" class="property-card">
-          <div class="property-image">
-            <img [src]="property.images?.[0] || 'assets/placeholder-property.jpg'" [alt]="property.title">
-            <mat-chip class="status-chip" [class]="'status-' + property.status.toLowerCase().replace(' ', '-')">
-              {{ property.status }}
-            </mat-chip>
+        <h3>{{ property.title }}</h3>
+        <p class="property-type">{{ property.propertyType }}</p>
+        <div class="property-details">
+          <div class="detail-item">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ property.location || property.address }}</span>
           </div>
-          
-          <mat-card-content class="property-content">
-            <h3 class="property-title">{{ property.title }}</h3>
-            <p class="property-location">
-              <mat-icon>location_on</mat-icon>
-              {{ property.location || property.address || 'Location not specified' }}
-            </p>
-            
-            <div class="property-details">
-              <div class="detail">
-                <mat-icon>category</mat-icon>
-                <span>{{ property.propertyType }}</span>
-              </div>
-              <div class="detail" *ngIf="property.bedrooms">
-                <mat-icon>bed</mat-icon>
-                <span>{{ property.bedrooms }} Beds</span>
-              </div>
-              <div class="detail" *ngIf="property.bathrooms">
-                <mat-icon>bathroom</mat-icon>
-                <span>{{ property.bathrooms }} Baths</span>
-              </div>
-              <div class="detail">
-                <mat-icon>square_foot</mat-icon>
-                <span>{{ property.size }} sqft</span>
-              </div>
-            </div>
+          <div class="detail-item">
+            <mat-icon>bed</mat-icon>
+            <span>{{ property.bedrooms }} Beds</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>bathtub</mat-icon>
+            <span>{{ property.bathrooms }} Baths</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>square_foot</mat-icon>
+            <span>{{ property.size }} sqm</span>
+          </div>
+        </div>
+        <div class="property-price">
+          ${{ property.price | number }}
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="openEditDialog(property)">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        <button mat-button color="warn" (click)="deleteProperty(property)">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 
-            <div class="property-price">
-              <span class="price">{{ property.currency }} {{ property.price | number:'1.0-0' }}</span>
+  <!-- Properties Table View -->
+  <mat-card *ngIf="!loading && viewMode === 'table'" class="table-card">
+    <table mat-table [dataSource]="filteredProperties" class="properties-table">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Property</th>
+        <td mat-cell *matCellDef="let property">
+          <div class="table-property">
+            <img [src]="property.images?.[0] || 'assets/placeholder.jpg'" [alt]="property.title" class="table-image">
+            <div>
+              <div class="property-name">{{ property.title }}</div>
+              <div class="property-address">{{ property.address || property.location }}</div>
             </div>
+          </div>
+        </td>
+      </ng-container>
 
-            <div class="property-stats">
-              <span matTooltip="Views"><mat-icon>visibility</mat-icon> {{ property.viewCount }}</span>
-              <span matTooltip="Inquiries"><mat-icon>contact_mail</mat-icon> {{ property.inquiryCount }}</span>
-              <span matTooltip="Interest Score"><mat-icon>favorite</mat-icon> {{ property.interestScore }}</span>
-            </div>
-          </mat-card-content>
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let property">{{ property.propertyType }}</td>
+      </ng-container>
 
-          <mat-card-actions class="property-actions">
-            <button mat-button color="primary" (click)="editProperty(property)">
-              <mat-icon>edit</mat-icon>
-              Edit
-            </button>
-            <button mat-button color="warn" (click)="deleteProperty(property)">
-              <mat-icon>delete</mat-icon>
-              Delete
-            </button>
-          </mat-card-actions>
-        </mat-card>
+      <!-- Address Column -->
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef>Location</th>
+        <td mat-cell *matCellDef="let property">{{ property.location || property.address }}</td>
+      </ng-container>
+
+      <!-- Price Column -->
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef>Price</th>
+        <td mat-cell *matCellDef="let property">${{ property.price | number }}</td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let property">
+          <mat-chip [style.background]="getStatusColor(property.status) + '20'" 
+                    [style.color]="getStatusColor(property.status)">
+            {{ property.status }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let property">
+          <button mat-icon-button color="primary" (click)="openEditDialog(property)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteProperty(property)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && filteredProperties.length === 0" class="empty-state">
+    <mat-icon>home_work</mat-icon>
+    <h2>No Properties Found</h2>
+    <p>Try adjusting your filters or add a new property</p>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Add Property
+    </button>
+  </div>
+</div>
+
+<!-- Property Dialog -->
+<div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
+  <div class="dialog-container" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2>{{ isEditMode ? 'Edit Property' : 'Add New Property' }}</h2>
+      <button mat-icon-button (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="propertyForm" (ngSubmit)="saveProperty()" class="dialog-content">
+      <div class="form-grid">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Property Title</mat-label>
+          <input matInput formControlName="title" placeholder="Enter property title">
+          <mat-error *ngIf="hasError('title')">{{ getFieldError('title') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="propertyType">
+            <mat-option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('propertyType')">{{ getFieldError('propertyType') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let status of propertyStatuses" [value]="status">{{ status }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('status')">{{ getFieldError('status') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="3" placeholder="Property description"></textarea>
+          <mat-error *ngIf="hasError('description')">{{ getFieldError('description') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="address" placeholder="Street address">
+          <mat-error *ngIf="hasError('address')">{{ getFieldError('address') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Location</mat-label>
+          <input matInput formControlName="location" placeholder="City or Area">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Currency</mat-label>
+          <mat-select formControlName="currency">
+            <mat-option value="BHD">BHD</mat-option>
+            <mat-option value="USD">USD</mat-option>
+            <mat-option value="AED">AED</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Price</mat-label>
+          <input matInput type="number" formControlName="price" placeholder="0">
+          <span matPrefix>$&nbsp;</span>
+          <mat-error *ngIf="hasError('price')">{{ getFieldError('price') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Bedrooms</mat-label>
+          <input matInput type="number" formControlName="bedrooms" placeholder="0">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Bathrooms</mat-label>
+          <input matInput type="number" formControlName="bathrooms" placeholder="0">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Size (sqm)</mat-label>
+          <input matInput type="number" formControlName="size" placeholder="0">
+          <mat-error *ngIf="hasError('size')">{{ getFieldError('size') }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Project</mat-label>
+          <input matInput formControlName="project" placeholder="Project name (optional)">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Island</mat-label>
+          <input matInput formControlName="island" placeholder="Island name (optional)">
+        </mat-form-field>
       </div>
 
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
+      <div class="dialog-actions">
+        <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="propertyForm.invalid">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

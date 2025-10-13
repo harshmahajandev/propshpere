@@ -21,6 +21,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CommonModule } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -33,6 +35,7 @@ import { CustomersComponent } from './components/customers/customers.component';
 import { InvoicesComponent } from './components/invoices/invoices.component';
 import { MaintenanceComponent } from './components/maintenance/maintenance.component';
 import { AnalyticsComponent } from './components/analytics/analytics.component';
+import { LayoutComponent } from './components/layout/layout.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
@@ -45,7 +48,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     CustomersComponent,
     InvoicesComponent,
     MaintenanceComponent,
-    AnalyticsComponent
+    AnalyticsComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
@@ -70,6 +74,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatTableModule,
+    MatProgressBarModule,
     CommonModule
   ],
   providers: [
