@@ -1,0 +1,225 @@
+<div class="leads-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>Leads Management</h1>
+        <p class="subtitle">Manage and track your sales leads</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" (click)="importLeads()">
+          <i class="material-icons">upload</i>
+          Import
+        </button>
+        <button class="btn btn-outline" (click)="exportLeads()">
+          <i class="material-icons">download</i>
+          Export
+        </button>
+        <button class="btn btn-primary" (click)="addLead()">
+          <i class="material-icons">add</i>
+          Add Lead
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <i class="material-icons">group_add</i>
+      </div>
+      <div class="stat-info">
+        <p class="stat-label">Total Leads</p>
+        <h3 class="stat-value">{{ stats.totalLeads }}</h3>
+        <p class="stat-change positive">+{{ stats.leadsGrowth }}% this month</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green">
+        <i class="material-icons">fiber_new</i>
+      </div>
+      <div class="stat-info">
+        <p class="stat-label">New Leads</p>
+        <h3 class="stat-value">{{ stats.newLeads }}</h3>
+        <p class="stat-subtext">{{ stats.leadsThisMonth }} this month</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon purple">
+        <i class="material-icons">verified</i>
+      </div>
+      <div class="stat-info">
+        <p class="stat-label">Qualified</p>
+        <h3 class="stat-value">{{ stats.qualifiedLeads }}</h3>
+        <p class="stat-subtext">Ready for conversion</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orange">
+        <i class="material-icons">trending_up</i>
+      </div>
+      <div class="stat-info">
+        <p class="stat-label">Conversion Rate</p>
+        <h3 class="stat-value">{{ stats.conversionRate }}%</h3>
+        <p class="stat-subtext">{{ stats.convertedLeads }} converted</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-box">
+      <i class="material-icons">search</i>
+      <input 
+        type="text" 
+        placeholder="Search leads by name, email, phone..." 
+        [(ngModel)]="searchQuery"
+        (input)="onSearchChange()"
+      />
+    </div>
+
+    <div class="filters">
+      <select [(ngModel)]="filterStatus" (change)="onFilterChange()" class="filter-select">
+        <option value="all">All Status</option>
+        <option *ngFor="let status of leadStatuses" [value]="status">{{ status }}</option>
+      </select>
+
+      <select [(ngModel)]="filterSource" (change)="onFilterChange()" class="filter-select">
+        <option value="all">All Sources</option>
+        <option *ngFor="let source of leadSources" [value]="source">{{ source }}</option>
+      </select>
+
+      <select [(ngModel)]="filterPriority" (change)="onFilterChange()" class="filter-select">
+        <option value="all">All Priority</option>
+        <option *ngFor="let priority of priorities" [value]="priority">{{ priority }}</option>
+      </select>
+
+      <select [(ngModel)]="sortBy" (change)="onFilterChange()" class="filter-select">
+        <option value="date-desc">Newest First</option>
+        <option value="date-asc">Oldest First</option>
+        <option value="score-desc">Highest Score</option>
+        <option value="score-asc">Lowest Score</option>
+        <option value="name">Name (A-Z)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading leads...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error-message">
+    <i class="material-icons">error</i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Leads Table -->
+  <div *ngIf="!loading && !errorMessage" class="table-container">
+    <table class="leads-table">
+      <thead>
+        <tr>
+          <th>Lead Info</th>
+          <th>Contact</th>
+          <th>Property Interest</th>
+          <th>Budget</th>
+          <th>Source</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Score</th>
+          <th>Next Follow Up</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lead of filteredLeads" class="lead-row">
+          <td>
+            <div class="lead-info">
+              <div class="lead-avatar">{{ lead.fullName.charAt(0) }}</div>
+              <div>
+                <p class="lead-name">{{ lead.fullName }}</p>
+                <p class="lead-meta">{{ lead.nationality }}</p>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="contact-info">
+              <p><i class="material-icons">email</i> {{ lead.email }}</p>
+              <p><i class="material-icons">phone</i> {{ lead.phone }}</p>
+            </div>
+          </td>
+          <td>
+            <div class="property-info">
+              <p class="property-type">{{ lead.propertyType || 'N/A' }}</p>
+              <p class="property-detail">{{ lead.location || 'Any location' }}</p>
+              <p class="property-detail" *ngIf="lead.bedrooms">{{ lead.bedrooms }} bedrooms</p>
+            </div>
+          </td>
+          <td>
+            <div class="budget-info">
+              <p *ngIf="lead.budgetMin && lead.budgetMax">
+                {{ lead.budgetMin | currency:'BHD':'symbol':'1.0-0' }} - {{ lead.budgetMax | currency:'BHD':'symbol':'1.0-0' }}
+              </p>
+              <p *ngIf="!lead.budgetMin || !lead.budgetMax">Not specified</p>
+            </div>
+          </td>
+          <td>
+            <span class="source-badge">{{ lead.source }}</span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(lead.status)">
+              {{ lead.status }}
+            </span>
+          </td>
+          <td>
+            <span class="priority-badge" [ngClass]="getPriorityClass(lead.priority)">
+              {{ lead.priority }}
+            </span>
+          </td>
+          <td>
+            <div class="score-container">
+              <div class="score-circle" [ngClass]="getScoreClass(lead.score)">
+                {{ lead.score }}
+              </div>
+              <p class="score-label">{{ lead.conversionProbability }}% prob</p>
+            </div>
+          </td>
+          <td>
+            <div class="followup-date" *ngIf="lead.nextFollowUpDate">
+              <i class="material-icons">event</i>
+              {{ lead.nextFollowUpDate | date:'MMM dd' }}
+            </div>
+            <p *ngIf="!lead.nextFollowUpDate">Not set</p>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-icon" (click)="editLead(lead)" title="Edit">
+                <i class="material-icons">edit</i>
+              </button>
+              <button class="btn-icon" (click)="convertToCustomer(lead)" title="Convert to Customer">
+                <i class="material-icons">person_add</i>
+              </button>
+              <button class="btn-icon delete" (click)="deleteLead(lead)" title="Delete">
+                <i class="material-icons">delete</i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredLeads.length === 0" class="empty-state">
+      <i class="material-icons">inbox</i>
+      <h3>No leads found</h3>
+      <p>Try adjusting your filters or add a new lead</p>
+      <button class="btn btn-primary" (click)="addLead()">Add First Lead</button>
+    </div>
+  </div>
+</div>

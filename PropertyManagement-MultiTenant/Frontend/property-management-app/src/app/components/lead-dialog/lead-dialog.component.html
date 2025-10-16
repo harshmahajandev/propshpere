@@ -1,0 +1,212 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2>{{ mode === 'create' ? 'Add New Lead' : 'Edit Lead' }}</h2>
+    <button class="close-button" (click)="onCancel()">
+      <i class="material-icons">close</i>
+    </button>
+  </div>
+
+  <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
+    <div class="dialog-body">
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-message">
+        <i class="material-icons">error</i>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h3>Personal Information</h3>
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <label>Full Name *</label>
+            <input 
+              type="text" 
+              formControlName="fullName"
+              placeholder="Enter full name"
+              [class.invalid]="isFieldInvalid('fullName')"
+            />
+            <span class="error-text" *ngIf="isFieldInvalid('fullName')">
+              {{ getErrorMessage('fullName') }}
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label>Email *</label>
+            <input 
+              type="email" 
+              formControlName="email"
+              placeholder="email@example.com"
+              [class.invalid]="isFieldInvalid('email')"
+            />
+            <span class="error-text" *ngIf="isFieldInvalid('email')">
+              {{ getErrorMessage('email') }}
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label>Phone *</label>
+            <input 
+              type="tel" 
+              formControlName="phone"
+              placeholder="+973 XXXX XXXX"
+              [class.invalid]="isFieldInvalid('phone')"
+            />
+            <span class="error-text" *ngIf="isFieldInvalid('phone')">
+              {{ getErrorMessage('phone') }}
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label>Secondary Phone</label>
+            <input 
+              type="tel" 
+              formControlName="secondaryPhone"
+              placeholder="+973 XXXX XXXX"
+            />
+          </div>
+
+          <div class="form-field">
+            <label>Nationality</label>
+            <input 
+              type="text" 
+              formControlName="nationality"
+              placeholder="Enter nationality"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Lead Details Section -->
+      <div class="form-section">
+        <h3>Lead Details</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Source *</label>
+            <select formControlName="source">
+              <option *ngFor="let source of leadSources" [value]="source">
+                {{ source }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Priority *</label>
+            <select formControlName="priority">
+              <option *ngFor="let priority of priorities" [value]="priority">
+                {{ priority }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-field" *ngIf="mode === 'edit'">
+            <label>Stage *</label>
+            <select formControlName="stage">
+              <option *ngFor="let stage of leadStages" [value]="stage">
+                {{ stage }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-field" [class.full-width]="mode === 'create'">
+            <label>Next Follow Up Date</label>
+            <input 
+              type="date" 
+              formControlName="nextFollowUpDate"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Interest Section -->
+      <div class="form-section">
+        <h3>Property Interest</h3>
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <label>Property Interest</label>
+            <input 
+              type="text" 
+              formControlName="propertyInterest"
+              placeholder="e.g., Luxury Villa in Saar"
+            />
+          </div>
+
+          <div class="form-field">
+            <label>Property Type</label>
+            <select formControlName="propertyType">
+              <option value="">Select Type</option>
+              <option *ngFor="let type of propertyTypes" [value]="type">
+                {{ type }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Location</label>
+            <input 
+              type="text" 
+              formControlName="location"
+              placeholder="e.g., Saar, Juffair"
+            />
+          </div>
+
+          <div class="form-field">
+            <label>Budget Min (BHD)</label>
+            <input 
+              type="number" 
+              formControlName="budgetMin"
+              placeholder="0"
+              min="0"
+            />
+          </div>
+
+          <div class="form-field">
+            <label>Budget Max (BHD)</label>
+            <input 
+              type="number" 
+              formControlName="budgetMax"
+              placeholder="0"
+              min="0"
+            />
+          </div>
+
+          <div class="form-field">
+            <label>Bedrooms</label>
+            <input 
+              type="number" 
+              formControlName="bedrooms"
+              placeholder="0"
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Notes Section -->
+      <div class="form-section">
+        <h3>Additional Information</h3>
+        <div class="form-field full-width">
+          <label>Notes</label>
+          <textarea 
+            formControlName="notes"
+            rows="4"
+            placeholder="Add any additional notes about this lead..."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="loading">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        <span *ngIf="!loading">{{ mode === 'create' ? 'Create Lead' : 'Update Lead' }}</span>
+        <span *ngIf="loading" class="loading-text">
+          <span class="spinner-small"></span>
+          {{ mode === 'create' ? 'Creating...' : 'Updating...' }}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

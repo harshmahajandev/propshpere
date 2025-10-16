@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, map } from 'rxjs';
 import { Router } from '@angular/router';
 import {
   LoginRequest,
@@ -10,6 +10,7 @@ import {
   CompanyRegistrationResponse,
   ApiResponse
 } from '../models/auth.model';
+import { Resource, Action } from '../models/user.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -76,6 +77,88 @@ export class AuthService {
 
   getCurrentUser(): Observable<ApiResponse<User>> {
     return this.http.get<ApiResponse<User>>(`${this.apiUrl}/auth/me`);
+  }
+
+  // Role and Permission Management
+  hasPermission(resource: Resource, action: Action): boolean {
+    const user = this.currentUserValue;
+    if (!user || !user.permissions) return false;
+
+    return user.permissions.some((permission: any) => 
+      permission.resource === resource && permission.action === action
+    );
+  }
+
+  hasRole(roleName: string): boolean {
+    const user = this.currentUserValue;
+    if (!user || !user.roles) return false;
+
+    return user.roles.some((role: any) => role.name === roleName);
+  }
+
+  hasAnyRole(roleNames: string[]): boolean {
+    const user = this.currentUserValue;
+    if (!user || !user.roles) return false;
+
+    return user.roles.some((role: any) => roleNames.includes(role.name));
+  }
+
+  hasAllRoles(roleNames: string[]): boolean {
+    const user = this.currentUserValue;
+    if (!user || !user.roles) return false;
+
+    return roleNames.every(roleName => 
+      user.roles!.some((role: any) => role.name === roleName)
+    );
+  }
+
+  isAdmin(): boolean {
+    return this.hasRole('admin');
+  }
+
+  isManager(): boolean {
+    return this.hasRole('manager');
+  }
+
+  isAgent(): boolean {
+    return this.hasRole('agent');
+  }
+
+  isViewer(): boolean {
+    return this.hasRole('viewer');
+  }
+
+  canManageUsers(): boolean {
+    return this.hasPermission(Resource.USERS, Action.MANAGE) || this.isAdmin();
+  }
+
+  canViewUsers(): boolean {
+    return this.hasPermission(Resource.USERS, Action.VIEW) || this.isAdmin();
+  }
+
+  canCreateUsers(): boolean {
+    return this.hasPermission(Resource.USERS, Action.CREATE) || this.isAdmin();
+  }
+
+  canEditUsers(): boolean {
+    return this.hasPermission(Resource.USERS, Action.EDIT) || this.isAdmin();
+  }
+
+  canDeleteUsers(): boolean {
+    return this.hasPermission(Resource.USERS, Action.DELETE) || this.isAdmin();
+  }
+
+  // Refresh user data with latest roles and permissions
+  refreshUserData(): Observable<User> {
+    return this.getCurrentUser().pipe(
+      tap(response => {
+        if (response.success && response.data) {
+          localStorage.setItem('currentUser', JSON.stringify(response.data));
+          this.currentUserSubject.next(response.data);
+        }
+      }),
+      map(response => response.data)
+    );
   }
 }
 

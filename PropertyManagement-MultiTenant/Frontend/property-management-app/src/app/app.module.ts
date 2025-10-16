@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
-// Material Modules
+// Material Modules - Extended
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,7 +23,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatRippleModule } from '@angular/material/core';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -36,7 +46,18 @@ import { InvoicesComponent } from './components/invoices/invoices.component';
 import { MaintenanceComponent } from './components/maintenance/maintenance.component';
 import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { LayoutComponent } from './components/layout/layout.component';
+import { PropertyDialogComponent } from './components/properties/property-dialog.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { LeadsComponent } from './components/leads/leads.component';
+import { CrmPipelineComponent } from './components/crm-pipeline/crm-pipeline.component';
+import { LeadDialogComponent } from './components/lead-dialog/lead-dialog.component';
+import { ProjectsComponent } from './components/projects/projects.component';
+import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
+import { ProjectDialogComponent } from './components/project-dialog/project-dialog.component';
+import { MilestoneDialogComponent } from './components/milestone-dialog/milestone-dialog.component';
+import { TaskDialogComponent } from './components/task-dialog/task-dialog.component';
+import { UsersComponent } from './components/users/users.component';
+import { UserDialogComponent } from './components/user-dialog/user-dialog.component';
 
 @NgModule({
   declarations: [
@@ -45,11 +66,22 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     RegisterComponent,
     DashboardComponent,
     PropertiesComponent,
+    PropertyDialogComponent,
     CustomersComponent,
     InvoicesComponent,
     MaintenanceComponent,
     AnalyticsComponent,
-    LayoutComponent
+    LayoutComponent,
+    LeadsComponent,
+    CrmPipelineComponent,
+    LeadDialogComponent,
+    ProjectsComponent,
+    ProjectDetailComponent,
+    ProjectDialogComponent,
+    MilestoneDialogComponent,
+    TaskDialogComponent,
+    UsersComponent,
+    UserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -76,7 +108,17 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     MatProgressSpinnerModule,
     MatTableModule,
     MatProgressBarModule,
-    CommonModule
+    MatTabsModule,
+    MatExpansionModule,
+    MatButtonToggleModule,
+    MatRippleModule,
+    MatSlideToggleModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatPaginatorModule,
+    MatCheckboxModule,
+    CommonModule,
+    DragDropModule
   ],
   providers: [
     {

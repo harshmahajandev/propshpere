@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
-import { Customer } from '../../models/customer.model';
+import { Customer, CustomerType, RiskLevel } from '../../models/customer.model';
 
 @Component({
   selector: 'app-customers',
@@ -14,7 +14,6 @@ export class CustomersComponent implements OnInit {
   errorMessage = '';
   searchQuery = '';
   filterType = 'all';
-  sidenavOpened = true;
 
   constructor(
     private customerService: CustomerService,
@@ -23,54 +22,117 @@ export class CustomersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCustomers();
-    
-    if (window.innerWidth < 768) {
-      this.sidenavOpened = false;
-    }
   }
 
   loadCustomers(): void {
     this.loading = true;
     this.errorMessage = '';
 
-    this.customerService.getCustomers().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.customers = response.data;
-        } else {
-          this.errorMessage = response.message || 'Failed to load customers';
-        }
-        this.loading = false;
-      },
-      error: (error) => {
-        this.errorMessage = error.error?.message || 'An error occurred while loading customers';
-        this.loading = false;
-      }
-    });
+    // Use mock data for now
+    setTimeout(() => {
+      this.customers = this.getMockCustomers();
+      this.loading = false;
+    }, 500);
+
+    // When backend is ready:
+    // this.customerService.getCustomers().subscribe({
+    //   next: (response) => {
+    //     if (response.success) {
+    //       this.customers = response.data;
+    //     }
+    //     this.loading = false;
+    //   },
+    //   error: (error) => {
+    //     this.errorMessage = 'Error loading customers';
+    //     this.loading = false;
+    //   }
+    // });
   }
 
-  toggleSidenav(): void {
-    this.sidenavOpened = !this.sidenavOpened;
+  getMockCustomers(): Customer[] {
+    return [
+      {
+        id: '1',
+        fullName: 'Ahmed Al-Rashid',
+        email: 'ahmed.rashid@email.com',
+        phone: '+973 3912 3456',
+        nationality: 'Bahraini',
+        address: 'Manama, Bahrain',
+        customerType: CustomerType.Individual,
+        riskLevel: RiskLevel.Low,
+        requirements: 'Looking for luxury villa',
+        linkedUserId: undefined,
+        totalPurchaseValue: 850000,
+        propertiesPurchased: 2,
+        companyId: '',
+        createdAt: new Date('2024-01-15'),
+        updatedAt: new Date('2024-10-10')
+      },
+      {
+        id: '2',
+        fullName: 'Sarah Johnson',
+        email: 'sarah.j@company.com',
+        phone: '+973 3823 4567',
+        nationality: 'American',
+        address: 'Riffa, Bahrain',
+        customerType: CustomerType.Corporate,
+        riskLevel: RiskLevel.Medium,
+        requirements: 'Commercial property portfolio',
+        linkedUserId: undefined,
+        totalPurchaseValue: 2500000,
+        propertiesPurchased: 5,
+        companyId: '',
+        createdAt: new Date('2024-03-20'),
+        updatedAt: new Date('2024-10-12')
+      },
+      {
+        id: '3',
+        fullName: 'Mohammed Al-Khalifa',
+        email: 'mohammed.k@email.com',
+        phone: '+973 3734 5678',
+        nationality: 'Bahraini',
+        address: 'Muharraq, Bahrain',
+        customerType: CustomerType.Individual,
+        riskLevel: RiskLevel.Low,
+        requirements: 'Residential apartment',
+        linkedUserId: undefined,
+        totalPurchaseValue: 450000,
+        propertiesPurchased: 1,
+        companyId: '',
+        createdAt: new Date('2024-06-10'),
+        updatedAt: new Date('2024-09-15')
+      },
+      {
+        id: '4',
+        fullName: 'Investment Group Ltd',
+        email: 'info@investmentgroup.com',
+        phone: '+973 1234 5678',
+        nationality: 'International',
+        address: 'Financial Harbor, Bahrain',
+        customerType: CustomerType.Corporate,
+        riskLevel: RiskLevel.High,
+        requirements: 'Large scale development',
+        linkedUserId: undefined,
+        totalPurchaseValue: 5000000,
+        propertiesPurchased: 10,
+        companyId: '',
+        createdAt: new Date('2024-02-01'),
+        updatedAt: new Date('2024-10-13')
+      }
+    ];
   }
 
   addCustomer(): void {
-    // Navigate to add customer form
+    alert('Add Customer feature - Coming soon!');
   }
 
   editCustomer(customer: Customer): void {
-    // Navigate to edit customer form
+    alert(`Edit ${customer.fullName} - Coming soon!`);
   }
 
   deleteCustomer(customer: Customer): void {
     if (confirm(`Are you sure you want to delete "${customer.fullName}"?`)) {
-      this.customerService.deleteCustomer(customer.id).subscribe({
-        next: () => {
-          this.loadCustomers();
-        },
-        error: (error) => {
-          this.errorMessage = error.error?.message || 'Failed to delete customer';
-        }
-      });
+      this.customers = this.customers.filter(c => c.id !== customer.id);
     }
   }
 
@@ -92,17 +154,4 @@ export class CustomersComponent implements OnInit {
 
     return filtered;
   }
-
-  navigateToDashboard(): void {
-    this.router.navigate(['/dashboard']);
-  }
-
-  navigateToProperties(): void {
-    this.router.navigate(['/properties']);
-  }
-
-  logout(): void {
-    this.router.navigate(['/login']);
-  }
 }
-

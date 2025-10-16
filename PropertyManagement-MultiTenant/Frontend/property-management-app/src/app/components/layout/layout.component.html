@@ -15,7 +15,6 @@
 
       <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
         <div class="user-avatar">{{ userInitials }}</div>
-        <span class="user-name">{{ userFullName }}</span>
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
 
@@ -51,7 +50,7 @@
     <aside class="app-sidebar" [class.collapsed]="isCollapsed">
       <nav class="sidebar-nav">
         <ul class="nav-list">
-          <li *ngFor="let item of menuItems" class="nav-item" [class.hidden]="!hasAccess(item.roles)">
+          <li *ngFor="let item of menuItems" class="nav-item" [class.hidden]="!hasAccess(item)">
             <a 
               [routerLink]="item.route" 
               routerLinkActive="active" 

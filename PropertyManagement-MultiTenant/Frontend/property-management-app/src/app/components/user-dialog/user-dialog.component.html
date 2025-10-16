@@ -1,0 +1,131 @@
+<div class="user-dialog">
+  <h2 mat-dialog-title>
+    <mat-icon>{{ isCreateMode ? 'person_add' : 'edit' }}</mat-icon>
+    {{ isCreateMode ? 'Create New User' : 'Edit User' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="userForm" class="user-form">
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" placeholder="Enter username">
+          <mat-hint>Must be at least 3 characters</mat-hint>
+          <mat-error *ngIf="userForm.get('username')?.hasError('required')">
+            {{ getErrorMessage('username') }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('username')?.hasError('minlength')">
+            {{ getErrorMessage('username') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="Enter email address">
+          <mat-hint>Valid email address required</mat-hint>
+          <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+            {{ getErrorMessage('email') }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+            {{ getErrorMessage('email') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" placeholder="Enter first name">
+          <mat-hint>Must be at least 2 characters</mat-hint>
+          <mat-error *ngIf="userForm.get('firstName')?.hasError('required')">
+            {{ getErrorMessage('firstName') }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('firstName')?.hasError('minlength')">
+            {{ getErrorMessage('firstName') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" placeholder="Enter last name">
+          <mat-hint>Must be at least 2 characters</mat-hint>
+          <mat-error *ngIf="userForm.get('lastName')?.hasError('required')">
+            {{ getErrorMessage('lastName') }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('lastName')?.hasError('minlength')">
+            {{ getErrorMessage('lastName') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone" placeholder="Enter phone number">
+          <mat-hint>Optional phone number</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Roles</mat-label>
+          <mat-select formControlName="roleIds" multiple>
+            <mat-option *ngFor="let role of roles" [value]="role.id">
+              {{ role.displayName }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>Select one or more roles</mat-hint>
+          <mat-error *ngIf="userForm.get('roleIds')?.hasError('required')">
+            {{ getErrorMessage('roleIds') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row" *ngIf="isCreateMode">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" type="password" placeholder="Enter password">
+          <mat-hint>Must be at least 6 characters</mat-hint>
+          <mat-error *ngIf="userForm.get('password')?.hasError('required')">
+            {{ getErrorMessage('password') }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
+            {{ getErrorMessage('password') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput formControlName="confirmPassword" type="password" placeholder="Confirm password">
+          <mat-hint>Must match password above</mat-hint>
+          <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('required')">
+            {{ getErrorMessage('confirmPassword') }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('passwordMismatch')">
+            {{ getErrorMessage('confirmPassword') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-checkbox formControlName="isActive" class="status-checkbox">
+          Active User
+        </mat-checkbox>
+        <mat-hint class="status-hint">Inactive users cannot log in to the system</mat-hint>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()" 
+      [disabled]="!isFormValid"
+      [class.loading]="isSubmitting">
+      <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+      <span *ngIf="!isSubmitting">{{ isCreateMode ? 'Create User' : 'Update User' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>

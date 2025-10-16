@@ -1,0 +1,201 @@
+<div class="projects-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1><mat-icon>work</mat-icon> Projects</h1>
+        <p class="subtitle">Manage projects, milestones, and tasks</p>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="addProject()">
+          <mat-icon>add</mat-icon>
+          New Project
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div *ngIf="stats" class="stats-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+        <mat-icon>folder</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-title">Total Projects</p>
+        <p class="kpi-value">{{ stats.totalProjects }}</p>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
+        <mat-icon>play_arrow</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-title">Active Projects</p>
+        <p class="kpi-value">{{ stats.activeProjects }}</p>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);">
+        <mat-icon>account_balance_wallet</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-title">Total Budget</p>
+        <p class="kpi-value">{{ stats.totalBudget | currency:'BHD':'symbol':'1.0-0' }}</p>
+        <p class="kpi-subtext">{{ stats.totalSpent | currency:'BHD':'symbol':'1.0-0' }} spent</p>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);">
+        <mat-icon>trending_up</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <p class="kpi-title">Avg. Completion</p>
+        <p class="kpi-value">{{ stats.averageCompletion }}%</p>
+        <p class="kpi-subtext">{{ stats.completedProjects }} completed</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input type="text" placeholder="Search projects..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
+    </div>
+
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
+          <mat-option value="all">All Status</mat-option>
+          <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ status }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Priority</mat-label>
+        <mat-select [(ngModel)]="filterPriority" (selectionChange)="onFilterChange()">
+          <mat-option value="all">All Priority</mat-option>
+          <mat-option *ngFor="let priority of priorities" [value]="priority">{{ priority }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Sort By</mat-label>
+        <mat-select [(ngModel)]="sortBy" (selectionChange)="onFilterChange()">
+          <mat-option value="date-desc">Newest First</mat-option>
+          <mat-option value="date-asc">Oldest First</mat-option>
+          <mat-option value="progress-desc">Highest Progress</mat-option>
+          <mat-option value="progress-asc">Lowest Progress</mat-option>
+          <mat-option value="name">Name (A-Z)</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading projects...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage" class="error-message">
+    <mat-icon>error</mat-icon>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Projects Grid -->
+  <div *ngIf="!loading && !errorMessage" class="projects-grid">
+    <mat-card *ngFor="let project of filteredProjects" class="project-card">
+      <mat-card-content>
+        <div class="card-header">
+          <div class="project-title-section">
+            <h3>{{ project.name }}</h3>
+            <span class="project-code">{{ project.projectCode }}</span>
+          </div>
+          <div class="badges">
+            <span class="status-badge" [ngClass]="getStatusClass(project.status)">
+              {{ project.status }}
+            </span>
+            <span class="priority-badge" [ngClass]="getPriorityClass(project.priority)">
+              {{ project.priority }}
+            </span>
+          </div>
+        </div>
+
+        <p class="project-description">{{ project.description }}</p>
+
+        <div class="project-property" *ngIf="project.propertyName">
+          <mat-icon>home_work</mat-icon>
+          <span>{{ project.propertyName }}</span>
+        </div>
+
+        <div class="project-manager">
+          <mat-icon>person</mat-icon>
+          <span>{{ project.managerName }}</span>
+        </div>
+
+        <div class="project-dates">
+          <div class="date-item">
+            <mat-icon>event</mat-icon>
+            <span>{{ project.startDate | date:'MMM dd, yyyy' }} - {{ project.endDate | date:'MMM dd, yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-header">
+            <span class="progress-label">Progress</span>
+            <span class="progress-value">{{ project.progress }}%</span>
+          </div>
+          <mat-progress-bar 
+            mode="determinate" 
+            [value]="project.progress"
+            [color]="project.progress >= 75 ? 'primary' : project.progress >= 50 ? 'accent' : 'warn'">
+          </mat-progress-bar>
+        </div>
+
+        <div class="budget-section" *ngIf="project.budget">
+          <div class="budget-row">
+            <span class="budget-label">Budget:</span>
+            <span class="budget-value">{{ project.budget | currency:'BHD':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="budget-row" *ngIf="project.spent">
+            <span class="budget-label">Spent:</span>
+            <span class="budget-value spent">{{ project.spent | currency:'BHD':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button (click)="viewProject(project)">
+          <mat-icon>visibility</mat-icon>
+          View
+        </button>
+        <button mat-button (click)="editProject(project)">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        <button mat-button color="warn" (click)="deleteProject(project)">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredProjects.length === 0" class="empty-state">
+      <mat-icon>work_outline</mat-icon>
+      <h3>No projects found</h3>
+      <p>Create your first project to get started</p>
+      <button mat-raised-button color="primary" (click)="addProject()">
+        <mat-icon>add</mat-icon>
+        Create Project
+      </button>
+    </div>
+  </div>
+</div>

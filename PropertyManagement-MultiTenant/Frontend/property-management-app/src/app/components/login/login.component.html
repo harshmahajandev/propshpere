@@ -71,6 +71,16 @@
         <span *ngIf="loading">Signing in...</span>
       </button>
 
+      <!-- Demo Login Button -->
+      <button type="button" class="btn-demo" (click)="demoLogin()" [disabled]="loading">
+        <span *ngIf="!loading">🚀 Try Demo (No Backend Required)</span>
+        <span *ngIf="loading">Loading...</span>
+      </button>
+
+      <div class="demo-info">
+        <p><strong>Backend not running?</strong> Use the Demo button to explore the UI!</p>
+      </div>
+
       <div class="register-link">
         <p>Don't have a company account?</p>
         <button type="button" class="btn-link" (click)="goToRegister()">

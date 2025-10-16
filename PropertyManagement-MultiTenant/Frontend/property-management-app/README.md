@@ -1,27 +1,65 @@
-# PropertyManagementApp
+# Property Management System
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.4.
+A comprehensive property management system built with Angular and Material Design.
 
-## Development server
+## Quick Start
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+```bash
+# Install dependencies
+npm install
 
-## Code scaffolding
+# Start development server
+ng serve
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+# Open http://localhost:4200
+```
 
-## Build
+## Features
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **Properties Management** - Complete property portfolio
+- **Customer Management** - CRM and customer tracking
+- **Leads & CRM Pipeline** - Lead management with drag & drop
+- **Project Management** - Projects, milestones, and tasks
+- **Invoices & Billing** - Payment tracking
+- **Maintenance** - Property maintenance management
+- **Analytics** - Data visualization and reporting
 
-## Running unit tests
+## Documentation
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+📚 **[Complete Documentation](./docs/README.md)**
 
-## Running end-to-end tests
+- [Getting Started Guide](./docs/guides/getting-started.md)
+- [Feature Documentation](./docs/features/)
+- [UI Components Guide](./docs/guides/ui-components.md)
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Technology Stack
 
-## Further help
+- **Angular 15** - Frontend framework
+- **Material Design 3** - UI components
+- **SCSS** - Styling
+- **RxJS** - State management
+- **Angular CDK** - Drag & drop functionality
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Development
+
+### Project Structure
+```
+src/
+├── app/
+│   ├── components/     # Feature components
+│   ├── models/         # Data models
+│   ├── services/       # Business logic
+│   └── guards/         # Route guards
+├── assets/             # Static assets
+└── styles.scss         # Global styles
+```
+
+### Available Scripts
+- `ng serve` - Development server
+- `ng build` - Production build
+- `ng test` - Unit tests
+- `ng e2e` - End-to-end tests
+
+## License
+
+This project is proprietary software.

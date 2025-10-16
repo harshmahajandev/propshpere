@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/auth.model';
 
 @Component({
   selector: 'app-login',
@@ -57,6 +58,34 @@ export class LoginComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  // Demo login without backend
+  demoLogin(): void {
+    this.loading = true;
+    this.errorMessage = '';
+
+    // Create a demo user object
+    const demoUser: User = {
+      id: 'demo-user-001',
+      username: 'demo',
+      email: 'demo@diyar.com',
+      firstName: 'Demo',
+      lastName: 'User',
+      fullName: 'Demo User',
+      role: 'Admin',
+      companyId: 'demo-company-001',
+      companyName: 'Diyar Properties',
+      companyCode: 'DEMO2024'
+    };
+
+    // Simulate login with demo credentials
+    setTimeout(() => {
+      localStorage.setItem('token', 'demo-token-' + Date.now());
+      localStorage.setItem('currentUser', JSON.stringify(demoUser));
+      this.loading = false;
+      this.router.navigate(['/dashboard']);
+    }, 1000);
   }
 
   goToRegister(): void {

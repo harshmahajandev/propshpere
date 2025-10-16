@@ -1,0 +1,295 @@
+<div class="project-detail-container" *ngIf="project">
+  <!-- Header -->
+  <div class="detail-header">
+    <button mat-icon-button (click)="goBack()" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-content">
+      <div>
+        <h1>{{ project.name }}</h1>
+        <p class="project-code">{{ project.projectCode }}</p>
+      </div>
+      <div class="header-badges">
+        <span class="status-badge" [ngClass]="getStatusClass(project.status)">
+          {{ project.status }}
+        </span>
+        <span class="priority-badge" [ngClass]="getPriorityClass(project.priority)">
+          {{ project.priority }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Overview Cards -->
+  <div class="overview-grid">
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="info-item">
+          <mat-icon>event</mat-icon>
+          <div>
+            <p class="label">Timeline</p>
+            <p class="value">{{ project.startDate | date:'MMM dd' }} - {{ project.endDate | date:'MMM dd, yyyy' }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="info-item">
+          <mat-icon>account_balance_wallet</mat-icon>
+          <div>
+            <p class="label">Budget</p>
+            <p class="value">{{ project.budget | currency:'BHD':'symbol':'1.0-0' }}</p>
+            <p class="subtext" *ngIf="project.spent">{{ project.spent | currency:'BHD':'symbol':'1.0-0' }} spent</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="info-item">
+          <mat-icon>person</mat-icon>
+          <div>
+            <p class="label">Manager</p>
+            <p class="value">{{ project.managerName }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="info-item">
+          <mat-icon>trending_up</mat-icon>
+          <div>
+            <p class="label">Progress</p>
+            <p class="value">{{ project.progress }}%</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Tabs -->
+  <mat-tab-group [(selectedIndex)]="activeTab" class="project-tabs">
+    <!-- Overview Tab -->
+    <mat-tab label="Overview">
+      <div class="tab-content">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Project Information</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="description">{{ project.description }}</p>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <mat-icon>home_work</mat-icon>
+                <div>
+                  <p class="detail-label">Property</p>
+                  <p class="detail-value">{{ project.propertyName || 'Not linked' }}</p>
+                </div>
+              </div>
+              <div class="detail-item">
+                <mat-icon>group</mat-icon>
+                <div>
+                  <p class="detail-label">Team Members</p>
+                  <p class="detail-value">{{ project.teamMembers?.length || 0 }} members</p>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <div class="progress-card">
+          <h3>Overall Progress</h3>
+          <div class="progress-visual">
+            <mat-progress-bar mode="determinate" [value]="project.progress"></mat-progress-bar>
+            <span class="progress-text">{{ project.progress }}% Complete</span>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Milestones Tab -->
+    <mat-tab label="Milestones">
+      <div class="tab-content">
+        <div class="section-header">
+          <h2>Milestones</h2>
+          <button mat-raised-button color="primary" (click)="addMilestone()">
+            <mat-icon>add</mat-icon>
+            Add Milestone
+          </button>
+        </div>
+
+        <div class="milestones-list">
+          <mat-card *ngFor="let milestone of milestones" class="milestone-card">
+            <mat-card-content>
+              <div class="milestone-header">
+                <div class="milestone-info">
+                  <h3>{{ milestone.name }}</h3>
+                  <span class="milestone-status" [ngClass]="getStatusClass(milestone.status)">
+                    {{ milestone.status }}
+                  </span>
+                </div>
+                <div class="milestone-actions">
+                  <button mat-icon-button (click)="editMilestone(milestone)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="deleteMilestone(milestone)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <p class="milestone-description">{{ milestone.description }}</p>
+
+              <div class="milestone-dates">
+                <mat-icon>event</mat-icon>
+                <span>{{ milestone.startDate | date:'MMM dd' }} - {{ milestone.endDate | date:'MMM dd, yyyy' }}</span>
+              </div>
+
+              <div class="milestone-progress">
+                <mat-progress-bar mode="determinate" [value]="milestone.progress"></mat-progress-bar>
+                <span>{{ milestone.progress }}%</span>
+              </div>
+
+              <!-- Tasks under milestone -->
+              <div class="milestone-tasks" *ngIf="milestone.tasks && milestone.tasks.length > 0">
+                <div class="tasks-header">
+                  <h4>Tasks ({{ milestone.tasks.length }})</h4>
+                  <button mat-button (click)="addTask(milestone)">
+                    <mat-icon>add</mat-icon>
+                    Add Task
+                  </button>
+                </div>
+                <div class="task-item" *ngFor="let task of milestone.tasks">
+                  <div class="task-info">
+                    <mat-icon [ngClass]="getStatusClass(task.status)">
+                      {{ task.status === 'Done' ? 'check_circle' : 'radio_button_unchecked' }}
+                    </mat-icon>
+                    <div class="task-details">
+                      <p class="task-title">{{ task.title }}</p>
+                      <p class="task-meta">
+                        <span *ngIf="task.assignedToName">{{ task.assignedToName }}</span>
+                        <span *ngIf="task.dueDate"> • Due: {{ task.dueDate | date:'MMM dd' }}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="task-actions">
+                    <span class="task-priority" [ngClass]="getPriorityClass(task.priority)">
+                      {{ task.priority }}
+                    </span>
+                    <button mat-icon-button (click)="editTask(task)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="deleteTask(task, milestone)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="no-tasks" *ngIf="!milestone.tasks || milestone.tasks.length === 0">
+                <p>No tasks yet</p>
+                <button mat-button (click)="addTask(milestone)">
+                  <mat-icon>add</mat-icon>
+                  Add First Task
+                </button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <div *ngIf="milestones.length === 0" class="empty-state">
+            <mat-icon>flag</mat-icon>
+            <h3>No milestones yet</h3>
+            <p>Create milestones to organize your project</p>
+            <button mat-raised-button color="primary" (click)="addMilestone()">
+              <mat-icon>add</mat-icon>
+              Add First Milestone
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tasks Tab (Independent Tasks) -->
+    <mat-tab label="Tasks">
+      <div class="tab-content">
+        <div class="section-header">
+          <h2>Independent Tasks</h2>
+          <button mat-raised-button color="primary" (click)="addTask()">
+            <mat-icon>add</mat-icon>
+            Add Task
+          </button>
+        </div>
+
+        <div class="tasks-grid">
+          <mat-card *ngFor="let task of independentTasks" class="task-card">
+            <mat-card-content>
+              <div class="task-card-header">
+                <mat-icon [ngClass]="getStatusClass(task.status)">
+                  {{ task.status === 'Done' ? 'check_circle' : 'radio_button_unchecked' }}
+                </mat-icon>
+                <div class="task-card-info">
+                  <h3>{{ task.title }}</h3>
+                  <span class="task-status" [ngClass]="getStatusClass(task.status)">
+                    {{ task.status }}
+                  </span>
+                </div>
+              </div>
+
+              <p class="task-description">{{ task.description }}</p>
+
+              <div class="task-meta-grid">
+                <div class="meta-item" *ngIf="task.assignedToName">
+                  <mat-icon>person</mat-icon>
+                  <span>{{ task.assignedToName }}</span>
+                </div>
+                <div class="meta-item" *ngIf="task.dueDate">
+                  <mat-icon>event</mat-icon>
+                  <span>{{ task.dueDate | date:'MMM dd, yyyy' }}</span>
+                </div>
+                <div class="meta-item" *ngIf="task.estimatedHours">
+                  <mat-icon>schedule</mat-icon>
+                  <span>{{ task.estimatedHours }}h</span>
+                </div>
+                <div class="meta-item">
+                  <span class="priority-chip" [ngClass]="getPriorityClass(task.priority)">
+                    {{ task.priority }}
+                  </span>
+                </div>
+              </div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button (click)="editTask(task)">
+                <mat-icon>edit</mat-icon>
+                Edit
+              </button>
+              <button mat-button color="warn" (click)="deleteTask(task)">
+                <mat-icon>delete</mat-icon>
+                Delete
+              </button>
+            </mat-card-actions>
+          </mat-card>
+
+          <div *ngIf="independentTasks.length === 0" class="empty-state">
+            <mat-icon>task_alt</mat-icon>
+            <h3>No independent tasks</h3>
+            <p>Create tasks that don't belong to a specific milestone</p>
+            <button mat-raised-button color="primary" (click)="addTask()">
+              <mat-icon>add</mat-icon>
+              Create Task
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<!-- Loading -->
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner></mat-spinner>
+  <p>Loading project details...</p>
+</div>

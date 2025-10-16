@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PropertyService } from '../../services/property.service';
 import { Property, PropertyFormData, PropertyStatus } from '../../models/property.model';
+import { PropertyDialogComponent } from './property-dialog.component';
 
 @Component({
   selector: 'app-properties',
@@ -33,7 +36,9 @@ export class PropertiesComponent implements OnInit {
 
   constructor(
     private propertyService: PropertyService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -209,17 +214,78 @@ export class PropertiesComponent implements OnInit {
   }
 
   openCreateDialog(): void {
-    this.isEditMode = false;
-    this.selectedProperty = null;
-    this.propertyForm.reset({ status: PropertyStatus.Available, currency: 'BHD' });
-    this.showDialog = true;
+    const dialogRef = this.dialog.open(PropertyDialogComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: { property: null },
+      panelClass: 'property-dialog',
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.createProperty(result);
+      }
+    });
   }
 
   openEditDialog(property: Property): void {
-    this.isEditMode = true;
-    this.selectedProperty = property;
-    this.propertyForm.patchValue(property);
-    this.showDialog = true;
+    const dialogRef = this.dialog.open(PropertyDialogComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: { property: property },
+      panelClass: 'property-dialog',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.updateProperty(result);
+      }
+    });
+  }
+
+  createProperty(formData: any): void {
+    const newProperty: Property = {
+      ...formData,
+      id: 'prop-' + Date.now(),
+      images: [],
+      companyId: 'demo-company',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    this.properties.unshift(newProperty);
+    this.applyFilters();
+    
+    this.snackBar.open('✅ Property created successfully!', 'Close', {
+      duration: 3000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['success-snackbar']
+    });
+  }
+
+  updateProperty(formData: any): void {
+    const index = this.properties.findIndex(p => p.id === formData.id);
+    if (index !== -1) {
+      this.properties[index] = {
+        ...this.properties[index],
+        ...formData,
+        updatedAt: new Date()
+      };
+      this.applyFilters();
+      
+      this.snackBar.open('✅ Property updated successfully!', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['success-snackbar']
+      });
+    }
   }
 
   closeDialog(): void {
@@ -229,82 +295,20 @@ export class PropertiesComponent implements OnInit {
   }
 
   saveProperty(): void {
-    if (this.propertyForm.invalid) {
-      Object.keys(this.propertyForm.controls).forEach(key => {
-        this.propertyForm.get(key)?.markAsTouched();
-      });
-      return;
-    }
-
-    const formData: PropertyFormData = this.propertyForm.value;
-
-    if (this.isEditMode && this.selectedProperty) {
-      // Update existing property
-      // this.propertyService.updateProperty(this.selectedProperty.id, formData).subscribe({
-      //   next: (response) => {
-      //     if (response.success) {
-      //       this.loadProperties();
-      //       this.closeDialog();
-      //     }
-      //   },
-      //   error: (error) => console.error('Error updating property:', error)
-      // });
-
-      // Mock update
-      const index = this.properties.findIndex(p => p.id === this.selectedProperty!.id);
-      if (index !== -1) {
-        this.properties[index] = { 
-          ...this.properties[index], 
-          ...formData,
-          updatedAt: new Date()
-        };
-        this.applyFilters();
-      }
-      this.closeDialog();
-    } else {
-      // Create new property
-      // this.propertyService.createProperty(formData).subscribe({
-      //   next: (response) => {
-      //     if (response.success) {
-      //       this.loadProperties();
-      //       this.closeDialog();
-      //     }
-      //   },
-      //   error: (error) => console.error('Error creating property:', error)
-      // });
-
-      // Mock create
-      const newProperty: Property = {
-        id: (this.properties.length + 1).toString(),
-        ...formData,
-        interestScore: 0,
-        viewCount: 0,
-        inquiryCount: 0,
-        createdById: '',
-        companyId: '',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      this.properties.push(newProperty);
-      this.applyFilters();
-      this.closeDialog();
-    }
+    // Handled by Material Dialog now
   }
 
   deleteProperty(property: Property): void {
     if (confirm(`Are you sure you want to delete "${property.title}"?`)) {
-      // this.propertyService.deleteProperty(property.id).subscribe({
-      //   next: (response) => {
-      //     if (response.success) {
-      //       this.loadProperties();
-      //     }
-      //   },
-      //   error: (error) => console.error('Error deleting property:', error)
-      // });
-
-      // Mock delete
       this.properties = this.properties.filter(p => p.id !== property.id);
       this.applyFilters();
+      
+      this.snackBar.open('🗑️ Property deleted successfully!', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['success-snackbar']
+      });
     }
   }
 

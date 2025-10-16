@@ -1,72 +1,16 @@
-<mat-sidenav-container class="sidenav-container">
-  
-  <!-- Shared Sidenav -->
-  <mat-sidenav #sidenav mode="side" [opened]="sidenavOpened" class="app-sidenav">
-    <div class="sidenav-header">
-      <mat-icon class="brand-icon">business_center</mat-icon>
-      <div class="brand-text">
-        <h2>ProManage</h2>
-        <span class="version">v1.0</span>
-      </div>
-    </div>
-
-    <mat-nav-list class="nav-list">
-      <h3 class="nav-section-title">MAIN MENU</h3>
-      
-      <mat-list-item class="nav-item" (click)="navigateToDashboard()">
-        <mat-icon matListItemIcon>dashboard</mat-icon>
-        <span matListItemTitle>Dashboard</span>
-      </mat-list-item>
-
-      <mat-list-item class="nav-item" (click)="navigateToProperties()">
-        <mat-icon matListItemIcon>apartment</mat-icon>
-        <span matListItemTitle>Properties</span>
-      </mat-list-item>
-
-      <mat-list-item class="nav-item active">
-        <mat-icon matListItemIcon>people</mat-icon>
-        <span matListItemTitle>Customers</span>
-      </mat-list-item>
-
-      <mat-list-item class="nav-item">
-        <mat-icon matListItemIcon>receipt_long</mat-icon>
-        <span matListItemTitle>Invoices</span>
-        <mat-icon class="coming-soon-badge" matTooltip="Coming Soon">schedule</mat-icon>
-      </mat-list-item>
-    </mat-nav-list>
-  </mat-sidenav>
-
-  <!-- Main Content -->
-  <mat-sidenav-content>
-    
-    <mat-toolbar class="app-toolbar">
-      <button mat-icon-button (click)="toggleSidenav()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      
-      <span class="toolbar-title">
-        <mat-icon>people</mat-icon>
-        Customers & Tenants
-      </span>
-      
-      <span class="toolbar-spacer"></span>
-      
-      <button mat-icon-button (click)="logout()" matTooltip="Logout">
-        <mat-icon>logout</mat-icon>
-      </button>
-    </mat-toolbar>
-
-    <div class="customers-content">
+<div class="customers-container">
       
       <div class="page-header">
-        <div class="header-left">
+        <div class="header-content">
           <h1><mat-icon>people</mat-icon> Customers</h1>
           <p>Manage your customer relationships</p>
         </div>
-        <button mat-raised-button color="primary" (click)="addCustomer()" class="add-btn">
-          <mat-icon>person_add</mat-icon>
-          Add Customer
-        </button>
+        <div class="header-actions">
+          <button mat-raised-button color="primary" (click)="addCustomer()">
+            <mat-icon>person_add</mat-icon>
+            Add Customer
+          </button>
+        </div>
       </div>
 
       <mat-card class="filters-card">
@@ -171,7 +115,4 @@
         </mat-card>
       </div>
 
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
+</div>

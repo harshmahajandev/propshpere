@@ -1,0 +1,114 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2>{{ mode === 'create' ? 'Create New Project' : 'Edit Project' }}</h2>
+    <button mat-icon-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+    <div class="dialog-body">
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-message">
+        <mat-icon>error</mat-icon>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h3>Basic Information</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Project Name</mat-label>
+            <input matInput formControlName="name">
+            <mat-hint>e.g., Villa Renovation</mat-hint>
+            <mat-error *ngIf="isFieldInvalid('name')">{{ getErrorMessage('name') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Project Code</mat-label>
+            <input matInput formControlName="projectCode">
+            <mat-hint>Auto-generated, can edit</mat-hint>
+            <mat-error *ngIf="isFieldInvalid('projectCode')">{{ getErrorMessage('projectCode') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Manager ID</mat-label>
+            <input matInput formControlName="managerId">
+            <mat-hint>User ID of project manager</mat-hint>
+            <mat-error *ngIf="isFieldInvalid('managerId')">{{ getErrorMessage('managerId') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+            <mat-hint>Brief description of the project</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Project Details -->
+      <div class="form-section">
+        <h3>Project Details</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of projectStatuses" [value]="status">
+                {{ status }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Priority</mat-label>
+            <mat-select formControlName="priority">
+              <mat-option *ngFor="let priority of priorities" [value]="priority">
+                {{ priority }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date</mat-label>
+            <input matInput type="date" formControlName="startDate">
+            <mat-error *ngIf="isFieldInvalid('startDate')">{{ getErrorMessage('startDate') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>End Date</mat-label>
+            <input matInput type="date" formControlName="endDate">
+            <mat-error *ngIf="isFieldInvalid('endDate')">{{ getErrorMessage('endDate') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Budget (BHD)</mat-label>
+            <input matInput type="number" formControlName="budget">
+            <mat-icon matPrefix>account_balance_wallet</mat-icon>
+            <mat-hint>Project budget amount</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Property ID</mat-label>
+            <input matInput formControlName="propertyId">
+            <mat-icon matPrefix>home_work</mat-icon>
+            <mat-hint>Optional - link to property</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button mat-button type="button" (click)="onCancel()" [disabled]="loading">
+        Cancel
+      </button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+        <span *ngIf="!loading">{{ mode === 'create' ? 'Create Project' : 'Update Project' }}</span>
+        <span *ngIf="loading">
+          <mat-spinner diameter="20"></mat-spinner>
+          {{ mode === 'create' ? 'Creating...' : 'Updating...' }}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

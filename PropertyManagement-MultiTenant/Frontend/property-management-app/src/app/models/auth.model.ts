@@ -24,6 +24,17 @@ export interface User {
   lastName: string;
   fullName: string;
   role: string;
+  roles?: Array<{
+    id: string;
+    name: string;
+    displayName: string;
+  }>;
+  permissions?: Array<{
+    id: string;
+    name: string;
+    resource: string;
+    action: string;
+  }>;
   companyId: string;
   companyName: string;
   companyCode: string;

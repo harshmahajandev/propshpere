@@ -1,26 +1,24 @@
-@import '../dashboard/dashboard.component.scss';
-
-.invoices-content {
-  padding: 1.5rem;
-  background: #f9fafb;
-  min-height: calc(100vh - 64px);
+.invoices-container {
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .invoices-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: var(--space-6);
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .invoice-card {
-  border-radius: 12px !important;
-  border: none !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-  transition: all 0.3s !important;
-
+  transition: var(--transition-base) !important;
+  
   &:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg) !important;
   }
 }
 
@@ -28,111 +26,61 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.25rem 1.25rem 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
-
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--gray-200);
+  
   .invoice-number {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.125rem;
+    font-size: 16px;
     font-weight: 700;
-    color: #111827;
-
-    mat-icon {
-      color: #3b82f6;
-    }
-  }
-
-  .status-chip {
-    font-size: 0.75rem !important;
-    height: 26px !important;
-    font-weight: 600 !important;
-
-    &.status-draft { background: #d1d5db !important; color: #374151 !important; }
-    &.status-sent { background: #dbeafe !important; color: #3b82f6 !important; }
-    &.status-paid { background: #d1fae5 !important; color: #10b981 !important; }
-    &.status-overdue { background: #fee2e2 !important; color: #ef4444 !important; }
-    &.status-cancelled { background: #e5e7eb !important; color: #6b7280 !important; }
+    color: var(--gray-900);
   }
 }
 
-.invoice-body {
-  padding: 1.25rem;
-}
-
-.invoice-info {
+.invoice-details {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
-
-  .info-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-
-    mat-icon {
-      font-size: 1.125rem;
-      width: 1.125rem;
-      height: 1.125rem;
-      color: #6b7280;
-      margin-top: 0.125rem;
-    }
-
-    div {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.125rem;
-
-      .label {
-        font-size: 0.75rem;
-        color: #6b7280;
-        font-weight: 600;
-        text-transform: uppercase;
-      }
-
-      .value {
-        font-size: 0.95rem;
-        color: #111827;
-        font-weight: 600;
-      }
-    }
-  }
-}
-
-.invoice-amounts {
-  padding: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-
-  .amount-row {
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  
+  .detail-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.95rem;
-    padding: 0.5rem 0;
-    color: #374151;
-
-    &.total {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #3b82f6;
-      border-top: 2px solid #d1d5db;
-      padding-top: 0.75rem;
-      margin-top: 0.5rem;
+    align-items: center;
+    font-size: 14px;
+    
+    .label {
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+    
+    .value {
+      color: var(--gray-900);
+      font-weight: 600;
     }
   }
 }
 
-@media (max-width: 768px) {
-  .invoices-content {
-    padding: 1rem;
+.invoice-amount {
+  padding: var(--space-5);
+  background: var(--primary-50);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  margin-top: var(--space-4);
+  
+  .amount-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-2);
   }
-
-  .invoices-list {
-    grid-template-columns: 1fr;
+  
+  .amount-value {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -1px;
   }
 }
-

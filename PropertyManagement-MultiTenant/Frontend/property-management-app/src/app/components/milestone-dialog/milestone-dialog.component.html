@@ -1,0 +1,75 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2>{{ mode === 'create' ? 'Create Milestone' : 'Edit Milestone' }}</h2>
+    <button mat-icon-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="milestoneForm" (ngSubmit)="onSubmit()">
+    <div class="dialog-body">
+      <div *ngIf="errorMessage" class="error-message">
+        <mat-icon>error</mat-icon>
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-section">
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Milestone Name</mat-label>
+            <input matInput formControlName="name">
+            <mat-hint>e.g., Foundation Work, Interior Design</mat-hint>
+            <mat-error *ngIf="isFieldInvalid('name')">{{ getErrorMessage('name') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+            <mat-hint>Describe the scope and objectives of this milestone</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of milestoneStatuses" [value]="status">
+                {{ status }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Display Order</mat-label>
+            <input matInput type="number" formControlName="order" min="1">
+            <mat-hint>Sequence number (1, 2, 3...)</mat-hint>
+            <mat-error *ngIf="isFieldInvalid('order')">{{ getErrorMessage('order') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date</mat-label>
+            <input matInput type="date" formControlName="startDate">
+            <mat-error *ngIf="isFieldInvalid('startDate')">{{ getErrorMessage('startDate') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>End Date</mat-label>
+            <input matInput type="date" formControlName="endDate">
+            <mat-error *ngIf="isFieldInvalid('endDate')">{{ getErrorMessage('endDate') }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button mat-button type="button" (click)="onCancel()" [disabled]="loading">
+        Cancel
+      </button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+        <span *ngIf="!loading">{{ mode === 'create' ? 'Create Milestone' : 'Update Milestone' }}</span>
+        <span *ngIf="loading">
+          <mat-spinner diameter="20"></mat-spinner>
+          {{ mode === 'create' ? 'Creating...' : 'Updating...' }}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

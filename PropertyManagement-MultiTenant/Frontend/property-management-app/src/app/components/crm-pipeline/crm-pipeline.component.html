@@ -1,0 +1,194 @@
+<div class="pipeline-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>CRM Pipeline</h1>
+        <p class="subtitle">Visual sales pipeline and deal tracking</p>
+      </div>
+      <div class="pipeline-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total Leads</span>
+          <span class="stat-value">{{ totalLeads }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Pipeline Value</span>
+          <span class="stat-value">{{ formatCurrency(totalValue) }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Avg. Conversion</span>
+          <span class="stat-value">{{ averageConversionRate.toFixed(1) }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading pipeline...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error-message">
+    <i class="material-icons">error</i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Pipeline Board -->
+  <div *ngIf="!loading && !errorMessage" class="pipeline-board">
+    <div 
+      *ngFor="let column of pipelineColumns; let colIndex = index" 
+      class="pipeline-column"
+      [style.border-top-color]="column.color"
+    >
+      <!-- Column Header -->
+      <div class="column-header" [style.background-color]="column.color + '15'">
+        <div class="column-title">
+          <h3 [style.color]="column.color">{{ column.title }}</h3>
+          <span class="lead-count">{{ column.stats.count }}</span>
+        </div>
+        <div class="column-stats">
+          <div class="stat-row">
+            <i class="material-icons">attach_money</i>
+            <span>{{ formatCurrency(column.stats.value) }}</span>
+          </div>
+          <div class="stat-row">
+            <i class="material-icons">trending_up</i>
+            <span>{{ column.stats.conversionRate }}% conversion</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lead Cards with Drag & Drop -->
+      <div 
+        class="cards-container"
+        cdkDropList
+        [id]="'column-' + colIndex"
+        [cdkDropListData]="column.leads"
+        [cdkDropListConnectedTo]="getConnectedLists()"
+        (cdkDropListDropped)="drop($event, column)"
+      >
+        <div 
+          *ngFor="let lead of column.leads" 
+          class="lead-card"
+          cdkDrag
+          [cdkDragData]="lead"
+        >
+          <!-- Drag Handle/Preview -->
+          <div class="drag-handle" cdkDragHandle>
+            <i class="material-icons">drag_indicator</i>
+          </div>
+          
+          <!-- Card Content -->
+          <div class="card-content-wrapper" (click)="viewLeadDetails(lead)"
+>
+            <div class="card-header">
+              <div class="lead-avatar" [style.background]="column.color">
+                {{ getLeadAvatar(lead.fullName) }}
+              </div>
+              <div class="lead-info">
+                <h4>{{ lead.fullName }}</h4>
+                <p class="lead-interest">{{ lead.propertyInterest }}</p>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="info-row">
+                <i class="material-icons">email</i>
+                <span>{{ lead.email }}</span>
+              </div>
+              <div class="info-row">
+                <i class="material-icons">phone</i>
+                <span>{{ lead.phone }}</span>
+              </div>
+              <div class="info-row budget" *ngIf="lead.budgetMin && lead.budgetMax">
+                <i class="material-icons">account_balance_wallet</i>
+                <span>{{ formatCurrency(lead.budgetMin) }} - {{ formatCurrency(lead.budgetMax) }}</span>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="score-badge" [style.background-color]="column.color + '20'" [style.color]="column.color">
+                <i class="material-icons">stars</i>
+                Score: {{ lead.score }}
+              </div>
+              <div class="probability-badge">
+                {{ lead.conversionProbability }}%
+              </div>
+            </div>
+          </div>
+          
+          <!-- Drag Preview (shows while dragging) -->
+          <div class="lead-card-preview" *cdkDragPreview>
+            <div class="preview-content">
+              <div class="lead-avatar-small" [style.background]="column.color">
+                {{ getLeadAvatar(lead.fullName) }}
+              </div>
+              <div class="preview-info">
+                <h4>{{ lead.fullName }}</h4>
+                <p>{{ lead.propertyInterest }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State for Column -->
+        <div *ngIf="column.leads.length === 0" class="empty-column">
+          <i class="material-icons">inbox</i>
+          <p>No leads in this stage</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pipeline Insights -->
+  <div *ngIf="!loading && !errorMessage" class="pipeline-insights">
+    <h3>Pipeline Insights</h3>
+    <div class="insights-grid">
+      <div class="insight-card">
+        <div class="insight-icon blue">
+          <i class="material-icons">visibility</i>
+        </div>
+        <div class="insight-content">
+          <h4>Pipeline Health</h4>
+          <p>Your pipeline is well-balanced with leads distributed across all stages.</p>
+          <span class="insight-status good">Good</span>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-icon purple">
+          <i class="material-icons">speed</i>
+        </div>
+        <div class="insight-content">
+          <h4>Average Deal Time</h4>
+          <p>Leads are taking an average of 14 days to move through the pipeline.</p>
+          <span class="insight-status neutral">Average</span>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-icon green">
+          <i class="material-icons">trending_up</i>
+        </div>
+        <div class="insight-content">
+          <h4>Win Rate</h4>
+          <p>Your team is closing deals at a healthy rate this month.</p>
+          <span class="insight-status good">Excellent</span>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-icon orange">
+          <i class="material-icons">lightbulb</i>
+        </div>
+        <div class="insight-content">
+          <h4>Recommendation</h4>
+          <p>Focus on moving qualified leads to proposal stage for better conversion.</p>
+          <span class="insight-status action">Action Needed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
